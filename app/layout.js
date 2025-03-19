@@ -50,8 +50,8 @@ export default function RootLayout({ children }) {
                 </div>
               </div>
             </div>
-            <Card />
-            <Card />
+            <Card id="1" />
+            <Card id="2" />
           </div>
           {/* <footer className="bottom-0 text-center text-white">
             <p>&copy; 2021 Triphla</p>
