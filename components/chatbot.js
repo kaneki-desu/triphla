@@ -117,7 +117,7 @@ export default function Chatbot() {
             {response &&
                 false && ( // Conditionally render the latest response if needed separately
                     <div>
-                        <strong>Chatbot's Last Response:</strong>
+                        <strong>Last Response:</strong>
                         <div>{response}</div>
                     </div>
                 )}
