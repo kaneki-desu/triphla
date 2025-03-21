@@ -12,7 +12,7 @@ export default function Navbar() {
                 </div>
                 <div className="my-9">triphla</div>
             </div>
-            <div className="flex fix justify-center items-center space-x-14 px-16">
+            <div className="flex font-light fix justify-center items-center space-x-14 px-16">
                 <Link href="/" className="pt-1 text-white hover:text-slate-300">
                     Home
                 </Link>

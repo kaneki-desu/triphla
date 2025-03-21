@@ -1,6 +1,6 @@
 import Navbar from "@/components/Navbar";
-import { SignedOut, SignInButton } from "@clerk/nextjs";
-import 'remixicon/fonts/remixicon.css';
+import { SignedOut } from "@clerk/nextjs";
+import OutlineButton from "@/components/outlinebutton";
 
 export default function Home() {
   return (
@@ -15,14 +15,7 @@ export default function Home() {
             <div><h1 className="text-6xl text-center">crypto</h1></div>
             
             <SignedOut>
-              <SignInButton mode="modal">
-                <div className="ml-3 mt-4 rounded-full btn btn-active">
-                  Get Started
-                  <span className="flex items-center justify-center">
-                    <i className="ri-arrow-right-up-long-line"></i>
-                  </span>
-                </div>
-              </SignInButton>
+              <OutlineButton></OutlineButton>
             </SignedOut>
           </div>
 

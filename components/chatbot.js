@@ -89,7 +89,7 @@ export default function Chatbot() {
 
     return (
         <div className="px-5 relative h-full pb-10"> {/* Added relative for absolute positioning of input */}
-            <div className="max-h-full pb-5 overflow-y-auto"> {/* Added max-height and scrollbar */}
+            <div className="max-h-full pb-5 overflow-y-auto scroll-smooth">
                 {chatHistory.map((message, index) => (
                     <div key={index} className="mt-3">
                         <strong>{message.role === "user" ? "You:" : "Chatbot:"}</strong>
@@ -97,7 +97,7 @@ export default function Chatbot() {
                     </div>
                 ))}
             </div>
-            <div className="mx-3 mb-2 flex absolute bottom-0 left-0 right-0"> {/* Added left-0 and right-0 */}
+            <div className="mx-3 mb-2 flex absolute bottom-0 left-0 right-0">
                 <input
                     type="text"
                     value={userInput}
