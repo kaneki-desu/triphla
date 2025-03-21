@@ -24,7 +24,9 @@ export default async function Home() {
             <div className="leading-none -mt-3 h-[12vh] rounded-b-[2vw] w-[30vw]"><h1 className="text-6xl text-center">for all things</h1></div>
             <div className="leading-none -mt-3 h-[12vh] flex w-[27vw] rounded-b-[2vw] justify-center">
               <div><h1 className="text-6xl text-center">crypto</h1></div>
-
+              <Link href="/chat">
+              <OutlineButton/>
+              </Link>
               <SignedOut>
                 <OutlineButton></OutlineButton>
               </SignedOut>
