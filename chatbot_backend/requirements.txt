@@ -1,0 +1,13 @@
+fastapi
+pydantic
+phidata
+reportlab
+python-dotenv
+yfinance
+packaging
+duckduckgo-search
+fastapi
+uvicorn
+groq
+python-multipart
+asyncio

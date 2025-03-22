@@ -20,7 +20,7 @@ export default function Card({ id }) {
   return (
     <div
       data-theme="coffee"
-      className="relative my-3 mr-3 rounded-xl w-[25.6vw] h-[25.6vw] overflow-hidden"
+      className="relative mr-3 rounded-xl w-[25.6vw] h-[25.6vw] overflow-hidden"
     >
       {id === "1" && (
         <div>
