@@ -75,7 +75,7 @@ export default function Chat() {
 
     if (!user) {
         return (
-            <div data-theme="coffee" className="min-h-screen">
+            <div data-theme="coffee" className="min-h-screen w-full">
                 <Navbar />
                 <div className="flex items-center justify-center min-h-[80vh]">
                     <div className="text-center">

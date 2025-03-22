@@ -27,9 +27,7 @@ export default async function Home() {
               <Link href="/chat">
               <OutlineButton/>
               </Link>
-              <SignedOut>
-                <OutlineButton></OutlineButton>
-              </SignedOut>
+              
             </div>
             <div className="flex mt-[21.65vh]">
               <div className="relative mt-3 mb-3 mx-3 rounded-xl w-[45vw] h-[25.6vw] overflow-hidden">
