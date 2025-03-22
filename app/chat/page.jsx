@@ -40,7 +40,7 @@ export default function Chat() {
     
         try {
             console.log('Sending request to backend...');
-            const response = await fetch('http://localhost:8000/api/chat', {
+            const response = await fetch('http://localhost:8080/api/chat', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -104,9 +104,10 @@ export default function Chat() {
                                     }`}
                                 >
                                     <div
-                                        className={`inline-block p-4 rounded-lg max-w-[80%] ${
+                                        className={`inline-block p-4 rounded-lg max-w-[80%] 
+                                            ${
                                             message.role === 'user'
-                                                ? 'bg-primary text-primary-content'
+                                                ? 'bg-base-100'
                                                 : 'bg-base-300'
                                         }`}
                                     >
