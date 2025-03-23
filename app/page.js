@@ -39,8 +39,11 @@ export default async function Home() {
                 <h1 className="text-7xl text-center">crypto</h1>
               </div>
               <Link href="/chat">
-                <OutlineButton></OutlineButton>
+              <OutlineButton/>
               </Link>
+              <SignedOut>
+                <OutlineButton></OutlineButton>
+              </SignedOut>
             </div>
           </div>
         </main>

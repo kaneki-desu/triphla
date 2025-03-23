@@ -4,6 +4,8 @@ import { useState, useRef, useEffect } from 'react';
 import Navbar from "@/components/Navbar";
 import { useUser } from "@clerk/nextjs";
 
+const API_URL = import.meta.env.VITE_AI_API;
+
 export default function Chat() {
     const { user } = useUser();
     const [messages, setMessages] = useState([
@@ -40,7 +42,7 @@ export default function Chat() {
     
         try {
             console.log('Sending request to backend...');
-            const response = await fetch('http://localhost:8000/api/chat', {
+            const response = await fetch(`${API_URL}/chat`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -75,7 +77,7 @@ export default function Chat() {
 
     if (!user) {
         return (
-            <div data-theme="coffee" className="min-h-screen">
+            <div data-theme="coffee" className="min-h-screen w-full">
                 <Navbar />
                 <div className="flex items-center justify-center min-h-[80vh]">
                     <div className="text-center">
@@ -104,9 +106,10 @@ export default function Chat() {
                                     }`}
                                 >
                                     <div
-                                        className={`inline-block p-4 rounded-lg max-w-[80%] ${
+                                        className={`inline-block p-4 rounded-lg max-w-[80%] 
+                                            ${
                                             message.role === 'user'
-                                                ? 'bg-primary text-primary-content'
+                                                ? 'bg-base-100'
                                                 : 'bg-base-300'
                                         }`}
                                     >

@@ -40,5 +40,3 @@ venv/
 # typescript
 *.tsbuildinfo
 next-env.d.ts
-
-_pycache_
