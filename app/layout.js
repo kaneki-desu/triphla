@@ -14,13 +14,8 @@ export default function RootLayout({ children }) {
         </head>
 
         <body data-theme="dark" className="grid w-full h-full">
-          <header></header>
-
-          <div className="w-full h-3"></div>
-          <div className="flex mb-3 h-[80vh] w-[100vw]">
-            <div data-theme="dark" className="w-3 h-full"></div>
+          <div className="flex mb-3 h-[80vh] w-full">
             {children}
-            <div data-theme="dark" className="w-3 h-full"></div>
           </div>
 
         </body>
