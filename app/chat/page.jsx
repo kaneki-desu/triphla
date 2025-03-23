@@ -4,6 +4,8 @@ import { useState, useRef, useEffect } from 'react';
 import Navbar from "@/components/Navbar";
 import { useUser } from "@clerk/nextjs";
 
+const API_URL = import.meta.env.VITE_AI_API;
+
 export default function Chat() {
     const { user } = useUser();
     const [messages, setMessages] = useState([
@@ -40,7 +42,7 @@ export default function Chat() {
     
         try {
             console.log('Sending request to backend...');
-            const response = await fetch('http://localhost:8080/api/chat', {
+            const response = await fetch('https://triphla-2862.onrender.com/api/chat', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
