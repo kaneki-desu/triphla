@@ -5,7 +5,7 @@ import { SignInButton, UserButton, SignedIn, SignedOut } from "@clerk/nextjs";
 
 export default function Navbar() {
     return (
-        <nav className="flex justify-between items-center">
+        <nav className="flex relative justify-between items-center">
             <div className="flex space-x-2">
                 <div className="my-7 ml-7 bg-white w-10 rounded-full flex items-center justify-center overflow-hidden">
                     <Image src="/dall.png" alt="Triphla Logo" width={128} height={128} />
@@ -17,10 +17,10 @@ export default function Navbar() {
                     Home
                 </Link>
                 <Link
-                    href="/dashboard"
+                    href="/interface"
                     className="pt-1 text-white hover:text-slate-300"
                 >
-                    Dashboard
+                    Interface
                 </Link>
                 <Link href="/about" className="pt-1 text-white hover:text-slate-300">
                     About

@@ -5,7 +5,7 @@ export default function AnimatedLinkComponent() {
   const animatedLinkWrapper = {
     display: "inline-block",
     position: "relative",
-    margin: "2vh",
+    margin: "3.3vh",
   };
 
   const animatedLink = {
@@ -16,7 +16,7 @@ export default function AnimatedLinkComponent() {
     textDecoration: "none",
     cursor: "pointer",
     width: "100%",
-    minWidth: "12vw",
+    minWidth: "13vw",
     outline: "2px solid transparent",
     outlineOffset: "2px",
     padding: "5px 10px",
@@ -30,7 +30,7 @@ export default function AnimatedLinkComponent() {
     pointerEvents: "none",
     borderRadius: "100px",
     width: "calc(100%)",
-    height: "calc(100% - 0.23rem)",
+    height: "calc(100%)",
     position: "absolute",
     padding: "1px",
     WebkitMask: "linear-gradient(#C59F60 0 0) content-box, linear-gradient(#C59F60 0 0)",
@@ -78,7 +78,7 @@ export default function AnimatedLinkComponent() {
           </div>
 
           {/* Inner button */}
-          <div className="flex items-center gap-4"  style={animatedLink}>
+          <div className="flex items-center gap-8"  style={animatedLink}>
               Get Started
             <span>
               <i className="ri-arrow-right-up-long-line"></i>
