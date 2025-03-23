@@ -14,7 +14,6 @@ export default function RootLayout({ children }) {
         </head>
 
         <body data-theme="dark" className="grid w-full h-full">
-          <header></header>
 
           <div className="flex">
             

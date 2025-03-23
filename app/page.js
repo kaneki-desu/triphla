@@ -19,7 +19,7 @@ export default async function Home() {
     <div>
       <div
         data-theme="coffee"
-        className="relative overflow-hidden my-3 mx-3 h-[80vh] rounded-xl"
+        className="relative overflow-hidden my-3 ml-3 h-[80vh] rounded-xl"
       >
         <div className="absolute inset-0 z-0">
         <Squares />
@@ -41,9 +41,7 @@ export default async function Home() {
               <Link href="/chat">
               <OutlineButton/>
               </Link>
-              <SignedOut>
-                <OutlineButton></OutlineButton>
-              </SignedOut>
+              
             </div>
           </div>
         </main>
@@ -78,12 +76,12 @@ export default async function Home() {
             </div>
           </div>
         </div>
-        <div className="flex">
+        <div className="flex gap-3">
           <Card id="1" />
           <Card id="2" />
         </div>
       </div>
-      <div className="relative mb-3 mx-3 rounded-xl overflow-hidden">
+      <div className="absolute mb-3 mx-3 rounded-xl overflow-hidden">
         <TimelineDemo></TimelineDemo>
       </div>
       

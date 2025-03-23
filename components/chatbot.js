@@ -88,7 +88,7 @@ export default function Chatbot() {
     }
 
     return (
-        <div className="px-5 relative h-full pb-10"> {/* Added relative for absolute positioning of input */}
+        <div className="relative h-full pb-10"> {/* Added relative for absolute positioning of input */}
             <div className="max-h-full pb-5 overflow-y-auto scroll-smooth">
                 {chatHistory.map((message, index) => (
                     <div key={index} className="mt-3">
