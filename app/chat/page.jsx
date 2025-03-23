@@ -40,7 +40,7 @@ export default function Chat() {
     
         try {
             console.log('Sending request to backend...');
-            const response = await fetch('http://localhost:8080/api/chat', {
+            const response = await fetch('http://localhost:8000/api/chat', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
