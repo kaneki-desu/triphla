@@ -18,6 +18,8 @@ import {
     User
 } from 'lucide-react';
 
+const API_URL = process.env.VITE_AI_API||"https://triphla-2862.onrender.com/api";
+console.log('API_URL:', API_URL);
 const FinancialPlanner = () => {
     const [formData, setFormData] = useState({
         name: '',
@@ -40,7 +42,7 @@ const FinancialPlanner = () => {
             setLoading(true);
             console.log('Generating financial report...');
             
-            const response = await fetch(`${process.env.VITE_AI_API}/generate-report`, {
+            const response = await fetch(`${API_URL}/generate-report`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -58,7 +60,7 @@ const FinancialPlanner = () => {
                     emergency_fund: formData.emergencyFund
                 }),
             });
-
+            console.log('Response:', response);
             if (!response.ok) {
                 throw new Error('Failed to generate report');
             }
@@ -85,13 +87,13 @@ const FinancialPlanner = () => {
             }
 
             const cleanDownloadUrl = PDFdownloadUrl.replace('/api', '');
-            const response = await fetch(`${process.env.VITE_AI_API}${cleanDownloadUrl}`, {
+            const response = await fetch(`${API_URL}${cleanDownloadUrl}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/pdf',
                 },
             });
-
+            console.log('Response:', response);
             if (!response.ok) {
                 throw new Error('Failed to download report');
             }

@@ -8,7 +8,7 @@ import { Switch } from "@/components/ui/switch";
 import { MessageSquare, Calculator } from 'lucide-react';
 import FinancialPlanner from '@/components/FinancialPlanner';
 
-const API_URL = process.env.VITE_AI_API;
+const API_URL = process.env.VITE_AI_API||"https://triphla-2862.onrender.com/api";
 
 export default function Chat() {
     const { user } = useUser();
