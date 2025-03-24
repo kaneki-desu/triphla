@@ -1,10 +1,14 @@
+// filepath: c:\Users\HARISHAMBHU\OneDrive\Desktop\triphla_main\triphla\app\chat\page.jsx
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
 import Navbar from "@/components/Navbar";
 import { useUser } from "@clerk/nextjs";
 
-const API_URL = import.meta.env.VITE_AI_API;
+
+    // Your existing Chat component code
+
+
 
 export default function Chat() {
     const { user } = useUser();
@@ -42,7 +46,7 @@ export default function Chat() {
     
         try {
             console.log('Sending request to backend...');
-            const response = await fetch(`${API_URL}/chat`, {
+            const response = await fetch(`${"https://triphla-2862.onrender.com/api"}/chat`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -96,6 +100,9 @@ export default function Chat() {
             <Navbar />
             <main className="flex-1 container mx-auto px-4 py-8">
                 <div className="w-full max-w-[1200px] mx-auto h-[calc(100vh-8rem)] flex flex-col">
+                    {/* Swiper Component */}
+                    <SwiperComponent />
+
                     <div className="bg-base-200 rounded-lg p-4 flex-1 overflow-y-auto mb-4">
                         <div className="max-w-4xl mx-auto">
                             {messages.map((message, index) => (
