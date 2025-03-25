@@ -385,10 +385,10 @@ async def generate_financial_report(query):
     schedule_file_deletion(pdf_path)
 
     # Step 4: Provide a download URL instead of absolute pdf_path
-    download_url = f"/api/download-financial-planner/{pdf_filename}"
+    download_url = f"/api/download-pdf/{pdf_filename}"
     print(f"Download link generated: {download_url}")
 
-    return f"Financial report successfully generated at {download_url}'"
+    return {"message": "Financial report generated successfully", "download_url": download_url}
 
 
 @app.get("/api/download-financial-planner/{filename}")
@@ -429,33 +429,10 @@ async def generate_report(request: InvestmentPlannerRequest) -> InvestmentPlanne
     try:
         # Generate financial plan
         query = f"""
-        Considering the present indian market and indian stock market news .Provide me a detail two page sip and swp plan , Given the following user details:Name: {request.name} ,Date of Birth: {request.dateOfBirth} ,Monthly Income: {request.income} INR ,Monthly Expenses: {request.expenses} INR ,Risk Appetite: {request.risk_appetite} ,Investment Goals: {request.investment_goals} ,Investing Period: {request.investing_period} ,Emergency Fund: {request.emergency_fund} Suggest a personalized financial plan, including savings strategy, investment options, and risk management. Also include a suggestion for stocks and mutual funds according to the market news and present market situation. Answer in such a professional way so that it can be converted into an attractive official pdf. 
+        Considering the present indian market and indian stock market news .Provide me a detail two page sip and swp plan , Given the following user details:Name: {request.name} ,Date of Birth: {request.dateOfBirth} ,Monthly Income: {request.income} INR ,Monthly Expenses: {request.expenses} INR ,Risk Appetite: {request.risk_appetite} ,Investment Goals: {request.investment_goals} ,Investing Period: {request.investing_period} ,Emergency Fund: {request.emergency_fund} Suggest a personalized financial plan, including savings strategy, investment options, and risk management. Also include a suggestion for stocks and mutual funds according to the market news and present market situation. Answer in such a professional way so that it can be converted into an attractive official pdf. 
         """
-        response = await generate_financial_report(query)
-         
-        # Extract text content from RunResponse
-        response_text = response.content if hasattr(response, 'content') else str(response)
-        
-        # Define storage directory
-        PDF_STORAGE_DIR = Path("generated_reports")
-        PDF_STORAGE_DIR.mkdir(exist_ok=True)  # Create if not exists
-
-        # Generate a unique filename
-        timestamp = datetime.now().strftime("%Y%m%d%H%M%S")  # Format: YYYYMMDDHHMMSS
-        pdf_filename = f"Investment_Planner_{timestamp}.pdf"
-        pdf_path = os.path.join(PDF_STORAGE_DIR, pdf_filename)
-        print(f"Generating PDF at: {pdf_path}")
-        
-        # Generate PDF and save locally
-        generate_financial_plan_og_pdf(response_text, pdf_path)
-
-        # Schedule the PDF for deletion after 7 minutes
-        schedule_file_deletion(pdf_path)
-
-        # Return a download link (API route)
-        download_url = f"/api/download-pdf/{pdf_filename}"
-        print(f"Download link generated: {download_url}")
-        return {"message": "PDF generated successfully!", "download_url": download_url}
+        # Directly return the response from generate_financial_report
+        return await generate_financial_report(query)
     except Exception as e:
         error_msg = str(e)
         print(f"Error in generate report: {error_msg}")
@@ -464,13 +441,30 @@ async def generate_report(request: InvestmentPlannerRequest) -> InvestmentPlanne
 @app.get("/api/download-pdf/{filename}")
 async def download_pdf(filename: str):
     """Serve the PDF file for download"""
-    PDF_STORAGE_DIR = Path("generated_reports")
-    pdf_path = os.path.join(PDF_STORAGE_DIR, filename)
-    
-    if os.path.exists(pdf_path):
-        return FileResponse(pdf_path, media_type="application/pdf", filename=filename)
-    else:
-        raise HTTPException(status_code=404, detail="File not found.")
+    try:
+        PDF_STORAGE_DIR = Path("financial_planner_pdfs")
+        pdf_path = os.path.join(PDF_STORAGE_DIR, filename)
+        
+        if not os.path.exists(pdf_path):
+            raise HTTPException(status_code=404, detail="File not found")
+            
+        # Set proper headers for file download
+        headers = {
+            "Content-Disposition": f"attachment; filename={filename}",
+            "Content-Type": "application/pdf",
+            "Access-Control-Expose-Headers": "Content-Disposition"
+        }
+        return FileResponse(
+            pdf_path,
+            headers=headers,
+            media_type="application/pdf",
+            filename=filename
+        )
+    except Exception as e:
+        print(f"Error serving PDF: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error serving file: {str(e)}")
+
+
 
 # Add a cleanup function to remove old PDFs on startup
 @app.on_event("startup")
