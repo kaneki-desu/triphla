@@ -1,5 +1,6 @@
-'use client';
-
+"use client";
+import { useEffect } from "react";
+import axios from "axios";
 import Navbar from "@/components/Navbar";
 import { SignedOut } from "@clerk/nextjs";
 import Card from "@/components/cards";
@@ -10,8 +11,32 @@ import OutlineButton from "@/components/outlinebutton";
 import Squares from "@/components/backgroundPaths";
 import { TimelineDemo } from "@/components/time";
 import BidirectionalSlider from "@/components/bidirectionalslider";
+import { useState } from "react";
+
+
+const NEWS_API= process.VITE_NEWS_API || "http://localhost:8000/api/stock-news";
 
 export default function Home() {
+  
+  const [news, setNews] = useState(null)
+
+  useEffect(() => {
+    console.log("hi")
+    axios.post(NEWS_API)
+        .then(response => {
+            setNews(response.data)
+            console.log(news)
+        })
+        .catch(error => {
+            console.error("Error fetching stock news:", error);
+        });
+    }, [news]);
+
+    // await new Promise((resolve) => {
+    //   setTimeout(() => {
+    //     resolve();
+    //   }, 10000);
+    // });
   const images = [
     { src: '/images/image1.jpg', alt: 'Image 1' },
     { src: '/images/image2.jpg', alt: 'Image 2' },
@@ -29,7 +54,9 @@ export default function Home() {
         <div className="absolute inset-0 z-0">
           <Squares />
         </div>
-
+      
+        {/* <StockNews/> This will fetch and log the stock news */}
+        
         <Navbar className="relative z-10 mb-10" />
         <main className="z-2 top-16 relative place-items-center">
           <div className="grid w-[70vw] h-1 place-items-center">
