@@ -1,3 +1,4 @@
+// filepath: c:\Users\HARISHAMBHU\OneDrive\Desktop\triphla_main\triphla\app\chat\page.jsx
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
@@ -47,7 +48,7 @@ export default function Chat() {
     
         try {
             console.log('Sending request to backend...');
-            const response = await fetch(`${API_URL}/chat`, {
+            const response = await fetch(`${"https://triphla-2862.onrender.com/api"}/chat`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
