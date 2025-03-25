@@ -93,28 +93,33 @@ const FinancialPlanner = () => {
             // Extract filename from the URL
             const filename = PDFdownloadUrl.split('/').pop();
             
-            // Make the download request
-            const response = await fetch(`${API_URL}/download-pdf/${filename}`, {
-                method: 'GET',
-                headers: {
-                    'Accept': 'application/pdf',
-                },
-                credentials: 'include' // Include credentials if needed
-            });
-
-            if (!response.ok) {
-                throw new Error(`Failed to download report: ${response.statusText}`);
-            }
-
-            // Get the blob from the response
-            const blob = await response.blob();
             
-            // Create a download link
-            const downloadUrl = window.URL.createObjectURL(blob);
+            // Make the download request
+            // const response = await fetch(`${API_URL}/download-financial-planner/${filename}`, {
+            //     method: 'GET',
+            //     headers: {
+            //         'Accept': 'application/pdf',
+            //     },
+            //     credentials: 'include' // Include credentials if needed
+            // });
+
+            // if (!response.ok) {
+            //     throw new Error(`Failed to download report: ${response.statusText}`);
+            // }
+
+            // // Get the blob from the response
+            // const blob = await response.blob();
+            
+            // // Create a download link
+            // const downloadUrl = window.URL.createObjectURL(blob);
+            // const link = document.createElement('a');
+            // link.href = downloadUrl;
+            // link.download = `financial_report_${formData.name.replace(/\s+/g, '_')}.pdf`;
+            
+            const downloadUrl = `${API_URL}/download-financial-planner/${filename}`;
             const link = document.createElement('a');
             link.href = downloadUrl;
             link.download = `financial_report_${formData.name.replace(/\s+/g, '_')}.pdf`;
-            
             // Append to body, click, and cleanup
             document.body.appendChild(link);
             link.click();
