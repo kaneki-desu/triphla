@@ -11,7 +11,9 @@
   "dependencies": {
     "@clerk/nextjs": "^6.12.5",
     "@google/generative-ai": "^0.24.0",
+    "@radix-ui/react-slider": "^1.1.2",
     "@radix-ui/react-slot": "^1.1.2",
+    "@radix-ui/react-switch": "^1.0.3",
     "@remixicon/react": "^4.6.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
