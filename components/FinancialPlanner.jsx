@@ -18,6 +18,7 @@ import {
     User
 } from 'lucide-react';
 
+// const API_URL = process.env.VITE_AI_API||"http://localhost:8000/api";
 const API_URL = process.env.VITE_AI_API||"https://triphla-2862.onrender.com/api";
 console.log('API_URL:', API_URL);
 const FinancialPlanner = () => {
@@ -60,7 +61,7 @@ const FinancialPlanner = () => {
                     emergency_fund: formData.emergencyFund
                 }),
             });
-            console.log('Response:', response);
+
             if (!response.ok) {
                 throw new Error('Failed to generate report');
             }
@@ -70,7 +71,10 @@ const FinancialPlanner = () => {
             
             if (data.download_url) {
                 setDownloadUrl(data.download_url);
-                await handleDownloadReport();
+                // Wait a short moment to ensure the file is ready
+                setTimeout(() => {
+                    handleDownloadReport();
+                }, 1000);
             }
         } catch (error) {
             console.error('Error:', error);
@@ -85,27 +89,36 @@ const FinancialPlanner = () => {
             if (!PDFdownloadUrl) {
                 throw new Error('No download URL available');
             }
-
-            const cleanDownloadUrl = PDFdownloadUrl.replace('/api', '');
-            const response = await fetch(`${API_URL}${cleanDownloadUrl}`, {
+            console.log('PDFdownloadUrl:', PDFdownloadUrl);
+            // Extract filename from the URL
+            const filename = PDFdownloadUrl.split('/').pop();
+            
+            // Make the download request
+            const response = await fetch(`${API_URL}/download-pdf/${filename}`, {
                 method: 'GET',
                 headers: {
-                    'Content-Type': 'application/pdf',
+                    'Accept': 'application/pdf',
                 },
+                credentials: 'include' // Include credentials if needed
             });
-            console.log('Response:', response);
+
             if (!response.ok) {
-                throw new Error('Failed to download report');
+                throw new Error(`Failed to download report: ${response.statusText}`);
             }
 
+            // Get the blob from the response
             const blob = await response.blob();
+            
+            // Create a download link
             const downloadUrl = window.URL.createObjectURL(blob);
             const link = document.createElement('a');
             link.href = downloadUrl;
-            link.setAttribute('download', `financial_report_${formData.name.replace(/\s+/g, '_')}.pdf`);
+            link.download = `financial_report_${formData.name.replace(/\s+/g, '_')}.pdf`;
+            
+            // Append to body, click, and cleanup
             document.body.appendChild(link);
             link.click();
-            link.remove();
+            document.body.removeChild(link);
             window.URL.revokeObjectURL(downloadUrl);
         } catch (error) {
             console.error('Error downloading report:', error);
