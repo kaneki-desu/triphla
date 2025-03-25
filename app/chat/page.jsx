@@ -1,13 +1,19 @@
+// filepath: c:\Users\HARISHAMBHU\OneDrive\Desktop\triphla_main\triphla\app\chat\page.jsx
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
 import Navbar from "@/components/Navbar";
 import { useUser } from "@clerk/nextjs";
+import { motion, AnimatePresence } from 'framer-motion';
+import { Switch } from "@/components/ui/switch";
+import { MessageSquare, Calculator } from 'lucide-react';
+import FinancialPlanner from '@/components/FinancialPlanner';
 
-const API_URL = import.meta.env.VITE_AI_API;
+const API_URL = process.env.VITE_AI_API||"https://triphla-2862.onrender.com/api";
 
 export default function Chat() {
     const { user } = useUser();
+    const [isChatMode, setIsChatMode] = useState(true);
     const [messages, setMessages] = useState([
         {
             role: 'assistant',
@@ -42,7 +48,7 @@ export default function Chat() {
     
         try {
             console.log('Sending request to backend...');
-            const response = await fetch(`${API_URL}/chat`, {
+            const response = await fetch(`${"https://triphla-2862.onrender.com/api"}/chat`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -73,7 +79,6 @@ export default function Chat() {
             setIsLoading(false);
         }
     };
-    
 
     if (!user) {
         return (
@@ -95,61 +100,101 @@ export default function Chat() {
         <div data-theme="coffee" className="min-h-screen w-full flex flex-col">
             <Navbar />
             <main className="flex-1 container mx-auto px-4 py-8">
-                <div className="w-full max-w-[1200px] mx-auto h-[calc(100vh-8rem)] flex flex-col">
-                    <div className="bg-base-200 rounded-lg p-4 flex-1 overflow-y-auto mb-4">
-                        <div className="max-w-4xl mx-auto">
-                            {messages.map((message, index) => (
-                                <div
-                                    key={index}
-                                    className={`mb-4 ${
-                                        message.role === 'user' ? 'text-right' : 'text-left'
-                                    }`}
-                                >
-                                    <div
-                                        className={`inline-block p-4 rounded-lg max-w-[80%] 
-                                            ${
-                                            message.role === 'user'
-                                                ? 'bg-base-100'
-                                                : 'bg-base-300'
-                                        }`}
-                                    >
-                                        <div className="whitespace-pre-line">{message.content}</div>
-                                    </div>
-                                </div>
-                            ))}
-                            {isLoading && (
-                                <div className="text-left">
-                                    <div className="inline-block p-4 rounded-lg bg-base-300">
-                                        <div className="flex items-center gap-2">
-                                            <div className="w-2 h-2 bg-current rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
-                                            <div className="w-2 h-2 bg-current rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
-                                            <div className="w-2 h-2 bg-current rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
-                            <div ref={messagesEndRef} />
+                <div className="w-full max-w-[1200px] mx-auto">
+                    {/* Toggle Switch */}
+                    <div className="flex items-center justify-center gap-4 mb-8">
+                        <div className="flex items-center gap-2">
+                            <MessageSquare className="w-5 h-5" />
+                            <span>Chat Mode</span>
+                        </div>
+                        <Switch
+                            checked={!isChatMode}
+                            onCheckedChange={() => setIsChatMode(!isChatMode)}
+                            className="data-[state=checked]:bg-primary"
+                        />
+                        <div className="flex items-center gap-2">
+                            <Calculator className="w-5 h-5" />
+                            <span>Financial Planner</span>
                         </div>
                     </div>
 
-                    <div className="max-w-4xl mx-auto w-full">
-                        <form onSubmit={handleSubmit} className="flex gap-2">
-                            <input
-                                type="text"
-                                value={input}
-                                onChange={(e) => setInput(e.target.value)}
-                                placeholder="Ask about your financial planning..."
-                                className="input input-bordered flex-1"
-                            />
-                            <button
-                                type="submit"
-                                className="btn btn-primary"
-                                disabled={isLoading}
+                    <AnimatePresence mode="wait">
+                        {isChatMode ? (
+                            <motion.div
+                                key="chat"
+                                initial={{ opacity: 0, x: -20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                exit={{ opacity: 0, x: 20 }}
+                                transition={{ duration: 0.3 }}
+                                className="h-[calc(100vh-12rem)] flex flex-col"
                             >
-                                Send
-                            </button>
-                        </form>
-                    </div>
+                                <div className="bg-base-200 rounded-lg p-4 flex-1 overflow-y-auto mb-4">
+                                    <div className="max-w-4xl mx-auto">
+                                        {messages.map((message, index) => (
+                                            <div
+                                                key={index}
+                                                className={`mb-4 ${
+                                                    message.role === 'user' ? 'text-right' : 'text-left'
+                                                }`}
+                                            >
+                                                <div
+                                                    className={`inline-block p-4 rounded-lg max-w-[80%] 
+                                                        ${
+                                                        message.role === 'user'
+                                                            ? 'bg-base-100'
+                                                            : 'bg-base-300'
+                                                    }`}
+                                                >
+                                                    <div className="whitespace-pre-line">{message.content}</div>
+                                                </div>
+                                            </div>
+                                        ))}
+                                        {isLoading && (
+                                            <div className="text-left">
+                                                <div className="inline-block p-4 rounded-lg bg-base-300">
+                                                    <div className="flex items-center gap-2">
+                                                        <div className="w-2 h-2 bg-current rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+                                                        <div className="w-2 h-2 bg-current rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+                                                        <div className="w-2 h-2 bg-current rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )}
+                                        <div ref={messagesEndRef} />
+                                    </div>
+                                </div>
+
+                                <div className="max-w-4xl mx-auto w-full">
+                                    <form onSubmit={handleSubmit} className="flex gap-2">
+                                        <input
+                                            type="text"
+                                            value={input}
+                                            onChange={(e) => setInput(e.target.value)}
+                                            placeholder="Ask about your financial planning..."
+                                            className="input input-bordered flex-1"
+                                        />
+                                        <button
+                                            type="submit"
+                                            className="btn btn-primary"
+                                            disabled={isLoading}
+                                        >
+                                            Send
+                                        </button>
+                                    </form>
+                                </div>
+                            </motion.div>
+                        ) : (
+                            <motion.div
+                                key="planner"
+                                initial={{ opacity: 0, x: 20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                exit={{ opacity: 0, x: -20 }}
+                                transition={{ duration: 0.3 }}
+                            >
+                                <FinancialPlanner />
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
                 </div>
             </main>
         </div>

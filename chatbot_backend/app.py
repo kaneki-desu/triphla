@@ -1,8 +1,9 @@
 # import asyncio
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
 from pydantic import BaseModel
-from datetime import datetime
+from datetime import datetime, timedelta
 import os
 from phi.agent import Agent
 from phi.model.groq import Groq
@@ -13,6 +14,9 @@ from reportlab.lib.styles import getSampleStyleSheet
 import re
 from dotenv import load_dotenv
 from typing import List, Optional, Dict
+import asyncio
+from pathlib import Path
+import shutil
 
 # Load environment variables from .env file
 load_dotenv()
@@ -43,12 +47,24 @@ class MutualFundRecommendation(BaseModel):
     description: str
 
 class MutualFundResponse(BaseModel):
-    equity_funds: List[MutualFundRecommendation]
-    debt_funds: List[MutualFundRecommendation]
-    gold_funds: List[MutualFundRecommendation]
-    total_investment_amount: float
-    monthly_sip: float
-    asset_allocation: Dict[str, float]
+    message: str
+    download_url: str
+
+class InvestmentPlannerRequest(BaseModel):
+    name: str
+    dateOfBirth: str
+    income: int
+    expenses: int
+    stepUpPercentage: int
+    expectedBonus: int
+    investment_goals: str
+    investing_period: str
+    risk_appetite: str
+    emergency_fund: int
+
+class InvestmentPlannerResponse(BaseModel):
+    message: str
+    download_url: str
 
 app = FastAPI()
 
@@ -60,7 +76,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
+@app.get("/")
+def read_root():
+    return {"message": "Hello, World!"}
 # ✅ Financial Planning Agent (Creates Investment & Savings Strategy)
 try:
     financial_planning_agent = Agent(
@@ -117,7 +135,12 @@ except Exception as e:
     print(f"Error initializing agents: {str(e)}")
     raise
 
-def generate_financial_plan_og_pdf(content, pdf_filename="test_two.pdf"):
+from pathlib import Path
+
+
+
+# ✅ PDF Generation Function
+def generate_financial_plan_og_pdf(content, pdf_path):
     """
     Converts structured financial content into a professional tabular PDF with dynamic column widths.
     
@@ -125,6 +148,7 @@ def generate_financial_plan_og_pdf(content, pdf_filename="test_two.pdf"):
         content (str): The structured text containing headings, tables, and paragraphs.
         pdf_filename (str): Name of the output PDF file.
     """
+    pdf_filename = pdf_path
     # Create PDF document with margins
     doc = SimpleDocTemplate(
         pdf_filename,
@@ -305,83 +329,24 @@ def generate_financial_plan_og_pdf(content, pdf_filename="test_two.pdf"):
     # Build PDF with page breaks
     doc.build(elements, onFirstPage=lambda canvas, doc: None,
               onLaterPages=lambda canvas, doc: None)
-
-# ✅ PDF Generation Function
-def generate_financial_plan_pdf(content, pdf_filename="financial_plan.pdf"):
-    """
-    Converts structured financial content into a professional tabular PDF.
     
-    Parameters:
-        content (str): The structured text containing headings, tables, and paragraphs.
-        pdf_filename (str): Name of the output PDF file.
-    """
-    doc = SimpleDocTemplate(pdf_filename, pagesize=A4)
-    elements = []
-    styles = getSampleStyleSheet()
-    title_style = styles["Title"]
-    heading_style = styles["Heading2"]
-    normal_style = styles["Normal"]
+    return str(pdf_path)
 
-    # Table style
-    table_style = TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-        ('BOTTOMPADDING', (0, 0), (-1, 0), 8),
-        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
-        ('GRID', (0, 0), (-1, -1), 1, colors.black)
-    ])
 
-    # Process content
-    lines = content.split("\n")
-    table_data = []
-    inside_table = False
+# Add these functions after the imports and before the app initialization
+async def delete_file_after_delay(file_path: str, delay_minutes: int = 7):
+    """Delete a file after specified delay in minutes"""
+    await asyncio.sleep(delay_minutes * 60)
+    try:
+        if os.path.exists(file_path):
+            os.remove(file_path)
+            print(f"Deleted file: {file_path}")
+    except Exception as e:
+        print(f"Error deleting file {file_path}: {str(e)}")
 
-    for line in lines:
-        line = line.strip()
-
-        if line.startswith("**") and line.endswith("**"):
-            # If a table is open, close it
-            if inside_table and table_data:
-                table = Table(table_data)
-                table.setStyle(table_style)
-                elements.append(table)
-                elements.append(Spacer(1, 12))
-                table_data = []
-                inside_table = False
-
-            elements.append(Spacer(1, 10))
-            elements.append(Paragraph(line.strip("**"), heading_style))
-            elements.append(Spacer(1, 5))
-
-        elif line.startswith("|") and line.endswith("|"):
-            row = [cell.strip() for cell in line.split("|")[1:-1]]
-
-            if all(re.match(r"\*\*(.+?)\*\*", cell) for cell in row):
-                row = [Paragraph(f"<b>{cell.strip('*')}</b>", normal_style) for cell in row]
-
-            table_data.append(row)
-            inside_table = True
-
-        elif line:
-            if inside_table and table_data:
-                table = Table(table_data)
-                table.setStyle(table_style)
-                elements.append(table)
-                elements.append(Spacer(1, 12))
-                table_data = []
-                inside_table = False
-            
-            elements.append(Paragraph(line, normal_style))
-            elements.append(Spacer(1, 6))
-
-    if table_data:
-        table = Table(table_data)
-        table.setStyle(table_style)
-        elements.append(table)
-
-    doc.build(elements)
+def schedule_file_deletion(file_path: str, delay_minutes: int = 7):
+    """Schedule a file for deletion after specified delay"""
+    asyncio.create_task(delete_file_after_delay(file_path, delay_minutes))
 
 # ✅ Multi-Agent Execution
 async def generate_financial_report(query):
@@ -397,153 +362,39 @@ async def generate_financial_report(query):
     
     # ✅ Extract text content from RunResponse
     formatted_text = formatted_response.content if hasattr(formatted_response, 'content') else str(formatted_response)
-    with open("response.txt", "w", encoding="utf-8") as file:
-            file.write(formatted_text)
-    # Step 3: Generate PDF
-    generate_financial_plan_og_pdf(formatted_text)
+    
+    # Save the response text for debugging
+    response_path = os.path.abspath("response.txt")
+    print(f"Saving response text to: {response_path}")
+    with open(response_path, "w", encoding="utf-8") as file:
+        file.write(formatted_text)
+    
+    # Define storage directory for Financial Planner PDFs
+    FINANCIAL_PLANNER_DIR = "financial_planner_pdfs"
+    os.makedirs(FINANCIAL_PLANNER_DIR, exist_ok=True)  # Ensure the directory exists
 
-    return f"Financial report successfully generated as 'test_two.pdf'"
+    # Generate a unique filename using timestamp
+    timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+    pdf_filename = f"financial_planner_{timestamp}.pdf"
+    pdf_path = os.path.join(FINANCIAL_PLANNER_DIR, pdf_filename)
 
-# ✅ Generate report endpoint
-@app.post("/api/generate-report")
-async def generate_report(message: ChatMessage):
-    try:
-        # Generate financial plan
-        response = await generate_financial_report(message.message)
-        
-        return {
-            "status": "success",
-            "message": response
-        }
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    print(f"Generating Financial Planner PDF at: {pdf_path}")
+    generate_financial_plan_og_pdf(formatted_text, pdf_path)
 
-def parse_mutual_funds_from_response(response_text: str) -> MutualFundResponse:
-    """
-    Parse the AI response to extract mutual fund recommendations and categorize them.
-    """
-    equity_funds = []
-    debt_funds = []
-    gold_funds = []
-    total_investment = 0
-    monthly_sip = 0
-    asset_allocation = {"equity": 0, "debt": 0, "gold": 0}
+    # Schedule the PDF for deletion after 7 minutes
+    schedule_file_deletion(pdf_path)
 
-    # Extract total investment amount and monthly SIP
-    investment_match = re.search(r"monthly\s+(?:investment|sip)\s*:?\s*(?:INR|Rs\.?)?[\s]*([0-9,]+)", 
-                               response_text.lower())
-    if investment_match:
-        monthly_sip = float(investment_match.group(1).replace(",", ""))
+    # Step 4: Provide a download URL instead of absolute pdf_path
+    download_url = f"/api/download-financial-planner/{pdf_filename}"
+    print(f"Download link generated: {download_url}")
 
-    # Extract asset allocation percentages
-    allocation_patterns = {
-        "equity": r"equity[\s\-]+(?:allocation|portion|investment)?\s*:?\s*(\d+)%",
-        "debt": r"debt[\s\-]+(?:allocation|portion|investment)?\s*:?\s*(\d+)%",
-        "gold": r"gold[\s\-]+(?:allocation|portion|investment)?\s*:?\s*(\d+)%"
-    }
+    return f"Financial report successfully generated at {download_url}'"
 
-    for asset_type, pattern in allocation_patterns.items():
-        match = re.search(pattern, response_text.lower())
-        if match:
-            asset_allocation[asset_type] = float(match.group(1))
 
-    # Extract fund recommendations
-    fund_sections = re.split(r"\*\*(.*?)\*\*", response_text)
-    current_category = None
-
-    for section in fund_sections:
-        section = section.strip()
-        if not section:
-            continue
-
-        if "equity" in section.lower():
-            current_category = "equity"
-        elif "debt" in section.lower():
-            current_category = "debt"
-        elif "gold" in section.lower():
-            current_category = "gold"
-        
-        # Extract fund details using regex
-        fund_matches = re.finditer(
-            r"(?P<fund_name>[A-Za-z\s]+(?:Fund|Savings|Gold|Index|ETF)[A-Za-z\s]*)"
-            r"(?:[\s\-]+(?P<allocation>\d+(?:\.\d+)?%))?"
-            r"(?:[\s\-]+(?P<risk>(?:Very\s+)?(?:High|Moderate|Low)\s+Risk))?"
-            r"(?:[\s\-]+(?P<description>(?:[^|\n])+))?",
-            section
-        )
-
-        for match in fund_matches:
-            fund_dict = match.groupdict()
-            if fund_dict["fund_name"]:
-                fund = MutualFundRecommendation(
-                    fund_name=fund_dict["fund_name"].strip(),
-                    category=current_category or "unknown",
-                    allocation_percentage=float(fund_dict["allocation"].strip("%")) if fund_dict["allocation"] else 0,
-                    risk_level=fund_dict["risk"] if fund_dict["risk"] else "Not specified",
-                    description=fund_dict["description"].strip() if fund_dict["description"] else ""
-                )
-
-                if current_category == "equity":
-                    equity_funds.append(fund)
-                elif current_category == "debt":
-                    debt_funds.append(fund)
-                elif current_category == "gold":
-                    gold_funds.append(fund)
-
-    return MutualFundResponse(
-        equity_funds=equity_funds,
-        debt_funds=debt_funds,
-        gold_funds=gold_funds,
-        total_investment_amount=total_investment,
-        monthly_sip=monthly_sip,
-        asset_allocation=asset_allocation
-    )
-
-@app.post("/api/mutual-fund-recommendation")
-async def get_mutual_fund_recommendation(request: MutualFundRequest) -> MutualFundResponse:
-    try:
-        # Format the query with user details
-        query = f"""Considering the present indian market .Provide me a detail two page sip and swp plan , 
-        Given the following user details: 
-        Monthly Income: {request.income} INR,
-        Monthly Expenses: {request.expenses} INR,
-        Risk Appetite: {request.risk_appetite}
-        Investment Goals: {request.investment_goals},
-        Investing Period = {request.investing_period}. 
-        Suggest a personalized financial plan, including savings strategy, investment options, and risk management. 
-        Please provide specific mutual fund recommendations in this format:
-        
-        **Equity Funds**
-        - Fund Name - Allocation% - Risk Level - Brief Description
-        
-        **Debt Funds**
-        - Fund Name - Allocation% - Risk Level - Brief Description
-        
-        **Gold Funds**
-        - Fund Name - Allocation% - Risk Level - Brief Description
-        
-        Include monthly SIP amount and asset allocation percentages.
-        Answer in such a professional way so that it can be converted into an attractive official pdf"""
-
-        # Get response from financial planning agent
-        response = await financial_planning_agent.arun(query)
-        
-        # Extract text content from RunResponse
-        response_text = response.content if hasattr(response, 'content') else str(response)
-        
-        # Parse the response to extract mutual fund recommendations
-        recommendations = parse_mutual_funds_from_response(response_text)
-        
-        # Generate PDF report
-        generate_financial_plan_og_pdf(response_text, "mutual_fund_recommendation.pdf")
-        
-        return recommendations
-
-    except Exception as e:
-        error_msg = str(e)
-        print(f"Error in mutual fund recommendation: {error_msg}")
-        raise HTTPException(status_code=500, detail=f"An error occurred: {error_msg}")
-
+@app.get("/api/download-financial-planner/{filename}")
+async def download_financial_planner(filename: str):
+    file_path = os.path.join(Path("financial_planner_pdfs"), filename)
+    return FileResponse(file_path, filename=filename, media_type="application/pdf")
 
 # ✅ Chat endpoint
 @app.post("/api/chat")
@@ -571,6 +422,73 @@ async def chat(message: ChatMessage):
             raise HTTPException(status_code=429, detail="Too many requests. Please try again later")
         else:
             raise HTTPException(status_code=500, detail=f"An error occurred: {error_msg}")
+
+# ✅ Generate report endpoint
+@app.post("/api/generate-report")
+async def generate_report(request: InvestmentPlannerRequest) -> InvestmentPlannerResponse:
+    try:
+        # Generate financial plan
+        query = f"""
+        Considering the present indian market and indian stock market news .Provide me a detail two page sip and swp plan , Given the following user details:Name: {request.name} ,Date of Birth: {request.dateOfBirth} ,Monthly Income: {request.income} INR ,Monthly Expenses: {request.expenses} INR ,Risk Appetite: {request.risk_appetite} ,Investment Goals: {request.investment_goals} ,Investing Period: {request.investing_period} ,Emergency Fund: {request.emergency_fund} Suggest a personalized financial plan, including savings strategy, investment options, and risk management. Also include a suggestion for stocks and mutual funds according to the market news and present market situation. Answer in such a professional way so that it can be converted into an attractive official pdf. 
+        """
+        response = await generate_financial_report(query)
+         
+        # Extract text content from RunResponse
+        response_text = response.content if hasattr(response, 'content') else str(response)
+        
+        # Define storage directory
+        PDF_STORAGE_DIR = Path("generated_reports")
+        PDF_STORAGE_DIR.mkdir(exist_ok=True)  # Create if not exists
+
+        # Generate a unique filename
+        timestamp = datetime.now().strftime("%Y%m%d%H%M%S")  # Format: YYYYMMDDHHMMSS
+        pdf_filename = f"Investment_Planner_{timestamp}.pdf"
+        pdf_path = os.path.join(PDF_STORAGE_DIR, pdf_filename)
+        print(f"Generating PDF at: {pdf_path}")
+        
+        # Generate PDF and save locally
+        generate_financial_plan_og_pdf(response_text, pdf_path)
+
+        # Schedule the PDF for deletion after 7 minutes
+        schedule_file_deletion(pdf_path)
+
+        # Return a download link (API route)
+        download_url = f"/api/download-pdf/{pdf_filename}"
+        print(f"Download link generated: {download_url}")
+        return {"message": "PDF generated successfully!", "download_url": download_url}
+    except Exception as e:
+        error_msg = str(e)
+        print(f"Error in generate report: {error_msg}")
+        raise HTTPException(status_code=500, detail=f"An error occurred: {error_msg}")
+
+@app.get("/api/download-pdf/{filename}")
+async def download_pdf(filename: str):
+    """Serve the PDF file for download"""
+    PDF_STORAGE_DIR = Path("generated_reports")
+    pdf_path = os.path.join(PDF_STORAGE_DIR, filename)
+    
+    if os.path.exists(pdf_path):
+        return FileResponse(pdf_path, media_type="application/pdf", filename=filename)
+    else:
+        raise HTTPException(status_code=404, detail="File not found.")
+
+# Add a cleanup function to remove old PDFs on startup
+@app.on_event("startup")
+async def cleanup_old_pdfs():
+    """Clean up any PDFs older than 7 minutes on startup"""
+    pdf_dirs = ["financial_planner_pdfs", "generated_reports"]
+    cutoff_time = datetime.now() - timedelta(minutes=7)
+    
+    for dir_name in pdf_dirs:
+        dir_path = Path(dir_name)
+        if dir_path.exists():
+            for pdf_file in dir_path.glob("*.pdf"):
+                if pdf_file.stat().st_mtime < cutoff_time.timestamp():
+                    try:
+                        pdf_file.unlink()
+                        print(f"Cleaned up old PDF: {pdf_file}")
+                    except Exception as e:
+                        print(f"Error cleaning up {pdf_file}: {str(e)}")
 
 if __name__ == "__main__":
     import uvicorn
