@@ -1,0 +1,11 @@
+fastapi
+phidata
+python-dotenv
+duckduckgo-search
+fastapi
+uvicorn
+groq
+python-multipart
+beautifulsoup4
+transformers
+torch

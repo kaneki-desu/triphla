@@ -7,6 +7,7 @@ import Link from "next/link";
 import OutlineButton from "@/components/outlinebutton";
 import Squares from "@/components/backgroundPaths";
 import { TimelineDemo } from "@/components/time";
+import StockNews from "@/components/StockNews";
 
 export default async function Home() {
   await new Promise((resolve) => {
@@ -24,6 +25,7 @@ export default async function Home() {
         <div className="absolute inset-0 z-0">
         <Squares />
       </div>
+        <StockNews/> {/* This will fetch and log the stock news */}
         
         <Navbar className="relative z-10 mb-10" />
         <main className="z-2 top-16 relative place-items-center">
