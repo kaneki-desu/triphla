@@ -6,6 +6,5 @@ fastapi
 uvicorn
 groq
 python-multipart
-beautifulsoup4
-transformers
-torch
+google-cloud-aiplatform
+vertexai
