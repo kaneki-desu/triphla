@@ -141,8 +141,8 @@ export default function Chat() {
                                                     className={`inline-block p-4 rounded-lg max-w-[80%] 
                                                         ${
                                                         message.role === 'user'
-                                                            ? 'bg-base-100'
-                                                            : 'bg-base-300'
+                                                            ? 'bg-yellow-900'
+                                                            : 'bg-yellow-950'
                                                     }`}
                                                 >
                                                     <div className="whitespace-pre-line">{message.content}</div>
