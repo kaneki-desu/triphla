@@ -1,5 +1,6 @@
 'use client';
 import LearningModule from '@/components/LearningModule';
+import QuizComponent from '@/components/QuizComponent';
 import Navbar from "@/components/Navbar";
 import { useUser } from "@clerk/nextjs";
 
@@ -27,7 +28,14 @@ export default function LearnPage() {
             <Navbar />
             <main className="flex-1 container mx-auto px-4 py-8">
                 <div className="w-full max-w-[1200px] mx-auto">
-                    <LearningModule />
+                    <div className="mb-8">
+                        <h2 className="text-2xl font-bold mb-4">Test Your Knowledge</h2>
+                        <QuizComponent />
+                    </div>
+                    <div>
+                        <h2 className="text-2xl font-bold mb-4">Learning Modules</h2>
+                        <LearningModule />
+                    </div>
                 </div>
             </main>
         </div>
