@@ -14,7 +14,7 @@ import BidirectionalSlider from "@/components/bidirectionalslider";
 import { useState } from "react";
 
 
-const NEWS_API= process.VITE_NEWS_API || "http://localhost:8000/api/stock-news";
+const NEWS_API= "https://triphla-yv9t.onrender.com/api/stock-news";
 
 export default function Home() {
   
@@ -31,12 +31,6 @@ export default function Home() {
             console.error("Error fetching stock news:", error);
         });
     }, [news]);
-
-    // await new Promise((resolve) => {
-    //   setTimeout(() => {
-    //     resolve();
-    //   }, 10000);
-    // });
   const images = [
     { src: '/images/image1.jpg', alt: 'Image 1' },
     { src: '/images/image2.jpg', alt: 'Image 2' },
@@ -70,7 +64,7 @@ export default function Home() {
               <div>
                 <h1 className="text-7xl text-center">crypto</h1>
               </div>
-              <Link href="/chat">
+              <Link href="/interface">
                 <OutlineButton />
               </Link>
             </div>
@@ -82,6 +76,7 @@ export default function Home() {
       <div className="w-screen">
           <h2 className="text-3xl font-bold text-center mb-4"></h2>
           <BidirectionalSlider images={images} />
+          {/* <BidirectionalSlider news={news} /> */}
         </div>
       <div className="flex gap-3 ml-3 mb-3">
         <div className="relative rounded-xl w-[45vw] h-[25.6vw] overflow-hidden">
