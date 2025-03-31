@@ -5,17 +5,29 @@ import { Progress } from "@/components/ui/progress2";
 import { PieChart as RechartsPieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
 import { Table, TableHeader, TableRow, TableCell, TableBody } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { AlertTriangle, TrendingUp, TrendingDown, Filter, ArrowUpDown, User, Briefcase, Calendar } from "lucide-react";
-import { useState } from "react";
+import { AlertTriangle, TrendingUp, TrendingDown, Filter, ArrowUpDown, User, Briefcase, Calendar, Upload } from "lucide-react"; // Added Upload icon
+import { useState, useEffect, useRef } from "react"; // Added useEffect, useRef
 import { useUser, UserButton } from "@clerk/nextjs";
 import { motion } from "framer-motion";
-import { ThemeToggleButton } from "@/components/ui/theme-toggle-button"; // Import the toggle button
+import { ThemeToggleButton } from "@/components/ui/theme-toggle-button";
 
 export default function PortfolioDashboard() {
   const { user } = useUser();
+  const [displayedAvatarUrl, setDisplayedAvatarUrl] = useState(user?.imageUrl || ''); // State for avatar URL
   const [sortField, setSortField] = useState("ticker");
   const [sortDirection, setSortDirection] = useState("asc");
   const [riskFilter, setRiskFilter] = useState("all");
+  const [isUploading, setIsUploading] = useState(false); // State for upload status
+  const fileInputRef = useRef(null); // Ref for file input
+
+  // Update displayed avatar if Clerk user data changes
+  useEffect(() => {
+    // TODO: In a real app with a database, you'd fetch the *custom* avatar URL here
+    // associated with the userId and set that as the initial state.
+    // For now, we default to Clerk's image or an empty string.
+    setDisplayedAvatarUrl(user?.imageUrl || '');
+  }, [user?.imageUrl]);
+
 
   // Mock data - replace with actual data fetching if needed
   const userProfile = {
@@ -58,6 +70,48 @@ export default function PortfolioDashboard() {
     ],
   };
 
+  const handleAvatarChange = async (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    setIsUploading(true);
+    const formData = new FormData();
+    formData.append('avatar', file);
+
+    try {
+      const response = await fetch('/api/user/avatar', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Upload failed: ${errorText}`);
+      }
+
+      const result = await response.json();
+      if (result.success && result.avatarUrl) {
+        // Prepend timestamp to force browser refresh if URL is the same but content changed
+        setDisplayedAvatarUrl(`${result.avatarUrl}?t=${new Date().getTime()}`);
+        // TODO: Add success notification/toast
+        console.log("Avatar updated successfully:", result.avatarUrl);
+      } else {
+         throw new Error('Upload failed, invalid response from server.');
+      }
+    } catch (error) {
+      console.error("Error uploading avatar:", error);
+      // TODO: Add error notification/toast
+      alert(`Error uploading avatar: ${error.message}`); // Simple alert for now
+    } finally {
+      setIsUploading(false);
+      // Reset file input value so the same file can be selected again if needed
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+    }
+  };
+
+
   const handleSort = (field) => {
     if (sortField === field) {
       setSortDirection(sortDirection === "asc" ? "desc" : "asc");
@@ -91,8 +145,50 @@ export default function PortfolioDashboard() {
     >
       {/* User Profile Section */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center space-y-4 md:space-y-0 bg-white dark:bg-gray-900 p-4 rounded-lg shadow-md">
+        {/* Left side: Avatar + Welcome Text */}
         <div className="flex items-center space-x-4">
-          <UserButton afterSignOutUrl="/"/>
+          {/* Avatar Upload */}
+          <div
+            className="relative group cursor-pointer" // Added cursor-pointer
+            onClick={() => !isUploading && fileInputRef.current?.click()} // Added onClick to trigger input
+            title="Click to change avatar"
+          >
+             <input
+               type="file"
+               accept="image/*"
+               ref={fileInputRef}
+               onChange={handleAvatarChange}
+               className="hidden" // Hide the default input
+               id="avatar-upload" // ID still useful for potential future label use, but not primary trigger
+               disabled={isUploading}
+             />
+             {/* Removed the label element */}
+             <div
+               className={`block w-14 h-14 rounded-full overflow-hidden border-2 border-transparent group-hover:border-blue-500 transition-colors ${isUploading ? 'opacity-50' : ''}`}
+             >
+               <img
+                 // Use state variable for the source
+                 src={displayedAvatarUrl || '/default-avatar.png'} // Provide a fallback image path
+                 alt="User Avatar"
+                 className="w-full h-full object-cover"
+                 onError={(e) => { e.target.onerror = null; e.target.src='/default-avatar.png'}} // Handle broken image links
+               />
+             </div>
+             {/* Upload Icon Overlay */}
+             {!isUploading && (
+                <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-0 group-hover:bg-opacity-50 rounded-full transition-opacity opacity-0 group-hover:opacity-100">
+                    <Upload size={24} className="text-white" />
+                </div>
+             )}
+             {/* Loading Spinner */}
+             {isUploading && (
+                <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-full">
+                    {/* Basic spinner - replace with a proper component if available */}
+                    <div className="w-6 h-6 border-t-2 border-b-2 border-white rounded-full animate-spin"></div>
+                </div>
+             )}
+          </div>
+
           <div>
             <h1 className="text-xl md:text-2xl font-semibold">
               Welcome, {user ? user.firstName || user.fullName : 'User'}!
@@ -100,16 +196,19 @@ export default function PortfolioDashboard() {
             <p className="text-sm text-gray-500 dark:text-gray-400">Here's your financial overview.</p>
           </div>
         </div>
+
+        {/* Right side: Details + Theme Toggle + User Button */}
         <div className="flex items-center space-x-4 md:space-x-6 text-sm text-gray-600 dark:text-gray-300">
            <div className="flex items-center space-x-1">
              <Calendar size={16} />
-             <span>Age: {userProfile.age}</span>
+             <span>Age: {userProfile.age}</span> {/* Note: This is still mock data */}
            </div>
            <div className="flex items-center space-x-1">
              <Briefcase size={16} />
-              <span>Accounts: {userProfile.dematAccounts.join(', ')}</span>
+              <span>Accounts: {userProfile.dematAccounts.join(', ')}</span> {/* Note: This is still mock data */}
             </div>
-            <ThemeToggleButton /> {/* Add the toggle button here */}
+            <ThemeToggleButton />
+            <UserButton afterSignOutUrl="/" userProfileUrl="/user-profile" userProfileMode="navigation" /> {/* Kept UserButton for profile access */}
          </div>
        </div>
 
