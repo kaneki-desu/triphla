@@ -43,13 +43,13 @@ const BidirectionalSlider = ({ news }) => {
         {[...news, ...news].map((newsItem, index) => {
           // Define radial gradient fading towards center (using white initially)
           const gradientStyle = newsItem.sentiment === "Bullish"
-            ? "bg-[radial-gradient(ellipse_at_center,_rgba(255,255,255,1)_0%,_rgba(34,197,94,0.3)_95%)]" // White to Green (semi-transparent)
-            : "bg-[radial-gradient(ellipse_at_center,_rgba(255,255,255,1)_0%,_rgba(239,68,68,0.3)_95%)]"; // White to Red (semi-transparent)
+            ? "bg-[radial-gradient(ellipse_at_center,_rgba(255,255,255,0)_0%,_rgba(34,197,94,0.3)_95%)]" // Base to Green (semi-transparent)
+            : "bg-[radial-gradient(ellipse_at_center,_rgba(255,255,255,0)_0%,_rgba(239,68,68,0.3)_95%)]"; // Base to Red (semi-transparent)
           return (
             <div key={`slider1-${index}`} className={`min-w-[${ITEM_WIDTH}px] h-40 p-2`}>
               {/* Apply radial gradient style class */}
               <div className={`w-full h-full rounded-lg ${gradientStyle} p-4 flex items-center justify-center text-center overflow-hidden`}>
-                <Link href={newsItem.link} target="_blank" rel="noopener noreferrer" className="hover:underline text-sm text-black"> {/* Keep text black for now */}
+                <Link href={newsItem.link} target="_blank" rel="noopener noreferrer" className="hover:underline text-lg"> {/* Keep text black for now */}
                   {newsItem.headline}
                 </Link>
               </div>
@@ -66,13 +66,13 @@ const BidirectionalSlider = ({ news }) => {
         {[...news, ...news].map((newsItem, index) => {
            // Define radial gradient fading towards center (using white initially)
            const gradientStyle = newsItem.sentiment === "Bullish"
-             ? "bg-[radial-gradient(ellipse_at_center,_rgba(255,255,255,1)_0%,_rgba(34,197,94,0.3)_95%)]" // White to Green (semi-transparent)
-             : "bg-[radial-gradient(ellipse_at_center,_rgba(255,255,255,1)_0%,_rgba(239,68,68,0.3)_95%)]"; // White to Red (semi-transparent)
+             ? "bg-[radial-gradient(ellipse_at_center,_rgba(255,255,255,0),_rgba(34,197,94,0.3)_95%)]" // White to Green (semi-transparent)
+             : "bg-[radial-gradient(ellipse_at_center,_rgba(255,255,255,0),_rgba(239,68,68,0.3)_95%)]"; // White to Red (semi-transparent)
            return (
              <div key={`slider2-${index}`} className={`min-w-[${ITEM_WIDTH}px] h-40 p-2`}>
                {/* Apply radial gradient style class */}
                <div className={`w-full h-full rounded-lg ${gradientStyle} p-4 flex items-center justify-center text-center overflow-hidden`}>
-                 <Link href={newsItem.link} target="_blank" rel="noopener noreferrer" className="hover:underline text-sm text-black"> {/* Keep text black for now */}
+                 <Link href={newsItem.link} target="_blank" rel="noopener noreferrer" className="hover:underline text-lg"> {/* Keep text black for now */}
                    {newsItem.headline}
                  </Link>
                </div>
