@@ -10,6 +10,7 @@ import { useState, useEffect, useRef } from "react"; // Added useEffect, useRef
 import { useUser, UserButton } from "@clerk/nextjs";
 import { motion } from "framer-motion";
 import { ThemeToggleButton } from "@/components/ui/theme-toggle-button";
+import Navbar from "@/components/Navbar";
 
 export default function PortfolioDashboard() {
   const { user } = useUser();
@@ -137,6 +138,7 @@ export default function PortfolioDashboard() {
     });
 
   return (
+    <>
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
@@ -145,49 +147,9 @@ export default function PortfolioDashboard() {
     >
       {/* User Profile Section */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center space-y-4 md:space-y-0 bg-white dark:bg-gray-900 p-4 rounded-lg shadow-md">
-        {/* Left side: Avatar + Welcome Text */}
+       
         <div className="flex items-center space-x-4">
           {/* Avatar Upload */}
-          <div
-            className="relative group cursor-pointer" // Added cursor-pointer
-            onClick={() => !isUploading && fileInputRef.current?.click()} // Added onClick to trigger input
-            title="Click to change avatar"
-          >
-             <input
-               type="file"
-               accept="image/*"
-               ref={fileInputRef}
-               onChange={handleAvatarChange}
-               className="hidden" // Hide the default input
-               id="avatar-upload" // ID still useful for potential future label use, but not primary trigger
-               disabled={isUploading}
-             />
-             {/* Removed the label element */}
-             <div
-               className={`block w-14 h-14 rounded-full overflow-hidden border-2 border-transparent group-hover:border-blue-500 transition-colors ${isUploading ? 'opacity-50' : ''}`}
-             >
-               <img
-                 // Use state variable for the source
-                 src={displayedAvatarUrl || '/default-avatar.png'} // Provide a fallback image path
-                 alt="User Avatar"
-                 className="w-full h-full object-cover"
-                 onError={(e) => { e.target.onerror = null; e.target.src='/default-avatar.png'}} // Handle broken image links
-               />
-             </div>
-             {/* Upload Icon Overlay */}
-             {!isUploading && (
-                <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-0 group-hover:bg-opacity-50 rounded-full transition-opacity opacity-0 group-hover:opacity-100">
-                    <Upload size={24} className="text-white" />
-                </div>
-             )}
-             {/* Loading Spinner */}
-             {isUploading && (
-                <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-full">
-                    {/* Basic spinner - replace with a proper component if available */}
-                    <div className="w-6 h-6 border-t-2 border-b-2 border-white rounded-full animate-spin"></div>
-                </div>
-             )}
-          </div>
 
           <div>
             <h1 className="text-xl md:text-2xl font-semibold">
@@ -207,9 +169,7 @@ export default function PortfolioDashboard() {
              <Briefcase size={16} />
               <span>Accounts: {userProfile.dematAccounts.join(', ')}</span> {/* Note: This is still mock data */}
             </div>
-            <ThemeToggleButton />
-            <UserButton afterSignOutUrl="/" userProfileUrl="/user-profile" userProfileMode="navigation" /> {/* Kept UserButton for profile access */}
-         </div>
+          </div>
        </div>
 
        <h2 className="text-2xl md:text-3xl font-bold">Dashboard</h2>
@@ -422,5 +382,7 @@ export default function PortfolioDashboard() {
         </CardContent>
       </Card>
     </motion.div>
+    </>
+
   );
 }

@@ -57,15 +57,13 @@ export default async function Home() {
   return (
     
 
-    <div>
+    <div className="w-full">
       <div data-theme="coffee" className="relative overflow-hidden  h-[80vh] rounded-xl">
         <div className="absolute inset-0 z-0">
           <Squares />
         </div>
       
         {/* <StockNews/> This will fetch and log the stock news */}
-        
-        <Navbar className="relative z-10 mb-10" />
         <main className="z-2 top-16 relative place-items-center">
           <div className="grid w-[70vw] h-1 place-items-center">
             <div className="leading-none h-[14vh] rounded-t-[3vw] rounded-b-[3vw]">
@@ -87,14 +85,14 @@ export default async function Home() {
       </div>
 
 
-      <div className="w-screen">
+      <div className="w-full">
           <h2 className="text-3xl font-bold text-center mb-4">Latest News</h2> {/* Added a title */}
           {/* Pass fetched news data to the slider */}
           {/*news ? <BidirectionalSlider news={news} /> : <p>Loading news...</p>*/}
           {/* If BidirectionalSlider also needs images, pass them too */}
           <BidirectionalSlider images={images} news={newsArr} />
         </div>
-      <div className="flex gap-3 ml-3 mb-3">
+      {/* <div className="flex gap-3  mb-3">
         <div className="relative rounded-xl w-[45vw] h-[25.6vw] overflow-hidden">
           <Image
             src="/bitc.jpeg"
@@ -123,10 +121,10 @@ export default async function Home() {
           <Card id="1" />
           <Card id="2" />
         </div>
-      </div>
-      <div className="absolute mb-3 mx-3 rounded-xl overflow-hidden">
+      </div> */}
+      {/* <div className="absolute mb-3 mx-3 rounded-xl overflow-hidden"> */}
         <TimelineDemo />
-      </div>
+      {/* </div> */}
     </div>
   );
 }

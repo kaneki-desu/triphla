@@ -2,6 +2,7 @@ import { React, Suspense } from "react";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import { ThemeProvider } from "next-themes"; // Import ThemeProvider
+import Navbar from "@/components/Navbar";
 
 export default function RootLayout({ children }) {
   return (
@@ -18,7 +19,8 @@ export default function RootLayout({ children }) {
             enableSystem
             disableTransitionOnChange
           >
-            <div className="flex w-full h-full"> {/* Ensure flex container takes full width/height */}
+            <div className="w-full h-full"> {/* Ensure flex container takes full width/height */}
+              <Navbar/>
               {children}
             </div>
           </ThemeProvider>
