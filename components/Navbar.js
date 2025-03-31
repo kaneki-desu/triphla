@@ -25,6 +25,9 @@ export default function Navbar() {
                  <Link href="/dashboard" className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors"> {/* Added Dashboard link */}
                     Dashboard
                 </Link>
+                 <Link href="/learn" className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors"> {/* Added learn link */}
+                    Learn
+                </Link>
                 <Link href="/about" className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors">
                     About
                 </Link>
