@@ -61,7 +61,8 @@ module.exports = {
   },
   plugins: [
     require('daisyui'),
-      require("tailwindcss-animate")
+    require("tailwindcss-animate"),
+    require('tailwindcss-gradients'), // Add the gradients plugin
 ],
   daisyui: {
    themes: true,
