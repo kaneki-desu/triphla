@@ -1,45 +1,51 @@
-import next from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { SignInButton, UserButton, SignedIn, SignedOut } from "@clerk/nextjs";
+import {ThemeToggleButton} from "./ui/theme-toggle-button"; // Corrected import name
 
 export default function Navbar() {
     return (
-        <nav className="flex relative justify-between items-center">
-            <div className="flex space-x-2">
-                <div className="my-7 ml-7 bg-white w-10 rounded-full flex items-center justify-center overflow-hidden">
-                    <Image src="/dall.png" alt="Triphla Logo" width={128} height={128} />
+        // Added background, padding, border, and ensured items are centered vertically
+        <nav className="flex justify-between items-center px-6 py-3 bg-background  border-b border-border sticky top-0 z-50">
+            {/* Adjusted logo section spacing and alignment */}
+            <div className="flex items-center px-3">
+                <div className="bg-white w-10 h-10 rounded-full flex items-center justify-center overflow-hidden"> {/* Made height explicit */}
+                    <Image src="/dall.png" alt="Triphla Logo" width={32} height={32} /> {/* Adjusted size */}
                 </div>
-                <div className="my-9">triphla</div>
+                <div className="font-semibold text-lg text-foreground">triphla</div> {/* Added font weight/size */}
             </div>
-            <div className="flex font-light fix justify-center items-center space-x-14 px-16">
-                <Link href="/" className="pt-1 text-white hover:text-slate-300">
+            {/* Adjusted link styling and added Dashboard link */}
+            <div className="flex items-center space-x-8"> {/* Adjusted spacing */}
+                <Link href="/" className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors">
                     Home
                 </Link>
-                <Link
-                    href="/interface"
-                    className="pt-1 text-white hover:text-slate-300"
-                >
+                <Link href="/interface" className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors">
                     Interface
                 </Link>
-                <Link href="/about" className="pt-1 text-white hover:text-slate-300">
+                 <Link href="/dashboard" className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors"> {/* Added Dashboard link */}
+                    Dashboard
+                </Link>
+                 <Link href="/learn" className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors"> {/* Added learn link */}
+                    Learn
+                </Link>
+                <Link href="/about" className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors">
                     About
                 </Link>
-
             </div>
-            <div className="flex space-x-4 ml-12 mr-4">
+            {/* Ensured right-side items are centered vertically */}
+            <div className="flex items-center space-x-4">
                 <SignedOut>
-                    <div className="rounded-full btn btn-active">
-                        <SignInButton mode="modal" />
+                    {/* Consider using a standard button component if available */}
+                    <div className="rounded-full btn btn-sm btn-primary"> {/* Adjusted button size/style */}
+                        <SignInButton mode="modal">Sign In</SignInButton> {/* Added text */}
                     </div>
                 </SignedOut>
 
                 <SignedIn>
-                    <div className="pr-5">
-                        <UserButton />
-                    </div>
+                    {/* UserButton usually handles its own styling */}
+                    <UserButton afterSignOutUrl="/" />
                 </SignedIn>
-
+                <ThemeToggleButton />
             </div>
         </nav>
     );

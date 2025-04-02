@@ -97,7 +97,7 @@ export default function Chat() {
     }
 
     return (
-        <div data-theme="coffee" className="min-h-screen w-full flex flex-col">
+        <div data-theme="forest" className="min-h-screen w-full flex flex-col">
             <Navbar />
             <main className="flex-1 container mx-auto px-4 py-8">
                 <div className="w-full max-w-[1200px] mx-auto">
@@ -141,8 +141,8 @@ export default function Chat() {
                                                     className={`inline-block p-4 rounded-lg max-w-[80%] 
                                                         ${
                                                         message.role === 'user'
-                                                            ? 'bg-yellow-900'
-                                                            : 'bg-yellow-950'
+                                                            ? 'bg-base-100'
+                                                            : 'bg-base-300'
                                                     }`}
                                                 >
                                                     <div className="whitespace-pre-line">{message.content}</div>

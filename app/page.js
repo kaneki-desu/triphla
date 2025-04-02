@@ -1,6 +1,4 @@
-"use client";
-import { useEffect } from "react";
-import axios from "axios";
+import axios from "axios"; // Keep axios if other parts need it, or remove if unused after changes.
 import Navbar from "@/components/Navbar";
 import { SignedOut } from "@clerk/nextjs";
 import Card from "@/components/cards";
@@ -11,32 +9,42 @@ import OutlineButton from "@/components/outlinebutton";
 import Squares from "@/components/backgroundPaths";
 import { TimelineDemo } from "@/components/time";
 import BidirectionalSlider from "@/components/bidirectionalslider";
-import { useState } from "react";
-
+// Removed useState and useEffect
 
 const NEWS_API= process.VITE_NEWS_API || "https://triphla-yv9t.onrender.com/";
+=======
+async function fetchNews() {
+  try {
+    // Using fetch API for server-side fetching and revalidation (ISR)
+    const response = await fetch(NEWS_API, {
+      method: 'POST', // Assuming POST is required as per original code
+      headers: {
+        'Content-Type': 'application/json', // Add headers if needed by the API
+      },
+      // Add body if the POST request needs data: body: JSON.stringify({ key: 'value' })
+      next: { revalidate: 3600 } // Revalidate every hour (3600 seconds)
+    });
 
-export default function Home() {
-  
-  const [news, setNews] = useState(null)
+    if (!response.ok) {
+      // Log detailed error for server-side debugging
+      console.error(`Error fetching stock news: ${response.status} ${response.statusText}`);
+      const errorBody = await response.text();
+      console.error("Error body:", errorBody);
+      return null; // Return null or throw an error
+    }
 
-  useEffect(() => {
-    console.log("hi")
-    axios.post(NEWS_API)
-        .then(response => {
-            setNews(response.data)
-            console.log(news)
-        })
-        .catch(error => {
-            console.error("Error fetching stock news:", error);
-        });
-    }, [news]);
+    const newsData = await response.json();
+    return newsData;
+  } catch (error) {
+    console.error("Error fetching stock news:", error);
+    return null; // Return null or handle error appropriately
+  }
+}
 
-    // await new Promise((resolve) => {
-    //   setTimeout(() => {
-    //     resolve();
-    //   }, 10000);
-    // });
+export default async function Home() {
+  const news = await fetchNews(); // Fetch data on the server
+  const newsArr= JSON.parse(news); // Parse the news data
+  console.log("Parsed news data:", typeof(newsArr)); // Log the parsed data
   const images = [
     { src: '/images/image1.jpg', alt: 'Image 1' },
     { src: '/images/image2.jpg', alt: 'Image 2' },
@@ -49,15 +57,13 @@ export default function Home() {
   return (
     
 
-    <div>
-      <div data-theme="coffee" className="relative overflow-hidden my-3 ml-3 h-[80vh] rounded-xl">
+    <div className="w-full">
+      <div data-theme="coffee" className="relative overflow-hidden  h-[80vh] rounded-xl">
         <div className="absolute inset-0 z-0">
           <Squares />
         </div>
       
         {/* <StockNews/> This will fetch and log the stock news */}
-        
-        <Navbar className="relative z-10 mb-10" />
         <main className="z-2 top-16 relative place-items-center">
           <div className="grid w-[70vw] h-1 place-items-center">
             <div className="leading-none h-[14vh] rounded-t-[3vw] rounded-b-[3vw]">
@@ -70,7 +76,7 @@ export default function Home() {
               <div>
                 <h1 className="text-7xl text-center">crypto</h1>
               </div>
-              <Link href="/chat">
+              <Link href="/interface">
                 <OutlineButton />
               </Link>
             </div>
@@ -79,11 +85,14 @@ export default function Home() {
       </div>
 
 
-      <div className="w-screen">
-          <h2 className="text-3xl font-bold text-center mb-4"></h2>
-          <BidirectionalSlider images={images} />
+      <div className="w-full">
+          <h2 className="text-3xl font-bold text-center mb-4">Latest News</h2> {/* Added a title */}
+          {/* Pass fetched news data to the slider */}
+          {/*news ? <BidirectionalSlider news={news} /> : <p>Loading news...</p>*/}
+          {/* If BidirectionalSlider also needs images, pass them too */}
+          <BidirectionalSlider images={images} news={newsArr} />
         </div>
-      <div className="flex gap-3 ml-3 mb-3">
+      {/* <div className="flex gap-3  mb-3">
         <div className="relative rounded-xl w-[45vw] h-[25.6vw] overflow-hidden">
           <Image
             src="/bitc.jpeg"
@@ -112,10 +121,10 @@ export default function Home() {
           <Card id="1" />
           <Card id="2" />
         </div>
-      </div>
-      <div className="absolute mb-3 mx-3 rounded-xl overflow-hidden">
+      </div> */}
+      {/* <div className="absolute mb-3 mx-3 rounded-xl overflow-hidden"> */}
         <TimelineDemo />
-      </div>
+      {/* </div> */}
     </div>
   );
 }

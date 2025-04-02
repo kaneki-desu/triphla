@@ -11,6 +11,7 @@
   "dependencies": {
     "@clerk/nextjs": "^6.12.5",
     "@google/generative-ai": "^0.24.0",
+    "@radix-ui/react-progress": "^1.1.2",
     "@radix-ui/react-slider": "^1.1.2",
     "@radix-ui/react-slot": "^1.1.2",
     "@radix-ui/react-switch": "^1.0.3",
@@ -25,8 +26,10 @@
     "lucide-react": "^0.483.0",
     "motion": "^12.5.0",
     "next": "^15.2.2",
+    "next-themes": "^0.4.6",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "recharts": "^2.15.1",
     "remixicon": "^4.6.0",
     "swiper": "^11.2.6",
     "tailwind-merge": "^3.0.2",
@@ -39,6 +42,7 @@
     "eslint": "^9",
     "eslint-config-next": "15.2.2",
     "postcss": "^8.5.3",
-    "tailwindcss": "^3.4.17"
+    "tailwindcss": "^3.4.17",
+    "tailwindcss-gradients": "^3.0.0"
   }
 }

@@ -1,33 +1,37 @@
 "use client";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
+import Link from 'next/link'; // Import Link for navigation
 
-const BidirectionalSlider = ({ images }) => {
-  const SPEED = 2; // Adjust speed as needed
-  const IMAGE_WIDTH = 300; // Width of each image
-  const TOTAL_WIDTH = images.length * IMAGE_WIDTH;
+const BidirectionalSlider = ({ news }) => {
+  // Handle potential null/empty news prop gracefully
+  if (!news || news.length === 0) {
+    return <div className="text-center p-4">No news available.</div>;
+  }
+
+  const SPEED = 1; // Adjusted speed slightly
+  const ITEM_WIDTH = 350; // Width of each news item container
+  const TOTAL_WIDTH = news.length * ITEM_WIDTH;
 
   const [leftPosition1, setLeftPosition1] = useState(0);
   const [rightPosition2, setRightPosition2] = useState(-TOTAL_WIDTH);
 
   useEffect(() => {
+    // Ensure TOTAL_WIDTH is calculated correctly before effect runs
+    const currentTotalWidth = news.length * ITEM_WIDTH;
+    setRightPosition2(-currentTotalWidth); // Initialize based on actual news length
+
     const animateSliders = () => {
       // Top slider: moves left to right
-      setLeftPosition1((prev) => (prev >= TOTAL_WIDTH ? 0 : prev + SPEED));
-      
+      setLeftPosition1((prev) => (prev >= currentTotalWidth ? -ITEM_WIDTH : prev + SPEED)); // Reset smoothly
+
       // Bottom slider: moves right to left (continuous loop)
-      setRightPosition2((prev) => {
-        // If the slider has moved past its starting point, reset to the initial negative position
-        if (prev >= 0) {
-          return -TOTAL_WIDTH;
-        }
-        // Otherwise, continue moving
-        return prev + SPEED;
-      });
+      setRightPosition2((prev) => (prev >= 0 ? -currentTotalWidth : prev + SPEED)); // Reset smoothly
     };
 
-    const animationId = setInterval(animateSliders, 10);
+
+    const animationId = setInterval(animateSliders, 20); // Slightly slower interval
     return () => clearInterval(animationId);
-  }, [images.length]);
+  }, [news.length]); // Depend on news.length
 
   return (
     <div className="relative w-full overflow-hidden h-96">
@@ -36,35 +40,45 @@ const BidirectionalSlider = ({ images }) => {
         className="absolute flex"
         style={{ transform: `translateX(-${leftPosition1}px)`, whiteSpace: "nowrap" }}
       >
-        {[...images, ...images].map((image, index) => (
-          <div key={`slider1-${index}`} className="min-w-[300px] h-40 p-2">
-            <div className="w-full h-full bg-gray-200 rounded-lg overflow-hidden">
-              <img
-                src={image.src}
-                alt={image.alt || `Slide ${index + 1}`}
-                className="w-full h-full object-cover"
-              />
+        {[...news, ...news].map((newsItem, index) => {
+          // Define radial gradient fading towards center (using white initially)
+          const gradientStyle = newsItem.sentiment === "Bullish"
+            ? "bg-[radial-gradient(ellipse_at_center,_rgba(255,255,255,0)_0%,_rgba(34,197,94,0.3)_95%)]" // Base to Green (semi-transparent)
+            : "bg-[radial-gradient(ellipse_at_center,_rgba(255,255,255,0)_0%,_rgba(239,68,68,0.3)_95%)]"; // Base to Red (semi-transparent)
+          return (
+            <div key={`slider1-${index}`} className={`min-w-[${ITEM_WIDTH}px] h-40 p-2`}>
+              {/* Apply radial gradient style class */}
+              <div className={`w-full h-full rounded-lg ${gradientStyle} p-4 flex items-center justify-center text-center overflow-hidden`}>
+                <Link href={newsItem.link} target="_blank" rel="noopener noreferrer" className="hover:underline text-lg"> {/* Keep text black for now */}
+                  {newsItem.headline}
+                </Link>
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       {/* Bottom slider (right to left) */}
       <div
-        className="absolute flex top-44"
+        className="absolute flex top-44" // Adjust top position if needed
         style={{ transform: `translateX(${rightPosition2}px)`, whiteSpace: "nowrap" }}
       >
-        {[...images, ...images].map((image, index) => (
-          <div key={`slider2-${index}`} className="min-w-[300px] h-40 p-2">
-            <div className="w-full h-full bg-gray-200 rounded-lg overflow-hidden">
-              <img
-                src={image.src}
-                alt={image.alt || `Slide ${index + 1}`}
-                className="w-full h-full object-cover"
-              />
-            </div>
-          </div>
-        ))}
+        {[...news, ...news].map((newsItem, index) => {
+           // Define radial gradient fading towards center (using white initially)
+           const gradientStyle = newsItem.sentiment === "Bullish"
+             ? "bg-[radial-gradient(ellipse_at_center,_rgba(255,255,255,0),_rgba(34,197,94,0.3)_95%)]" // White to Green (semi-transparent)
+             : "bg-[radial-gradient(ellipse_at_center,_rgba(255,255,255,0),_rgba(239,68,68,0.3)_95%)]"; // White to Red (semi-transparent)
+           return (
+             <div key={`slider2-${index}`} className={`min-w-[${ITEM_WIDTH}px] h-40 p-2`}>
+               {/* Apply radial gradient style class */}
+               <div className={`w-full h-full rounded-lg ${gradientStyle} p-4 flex items-center justify-center text-center overflow-hidden`}>
+                 <Link href={newsItem.link} target="_blank" rel="noopener noreferrer" className="hover:underline text-lg"> {/* Keep text black for now */}
+                   {newsItem.headline}
+                 </Link>
+               </div>
+             </div>
+           );
+        })}
       </div>
     </div>
   );
