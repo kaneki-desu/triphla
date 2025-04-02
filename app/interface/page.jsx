@@ -98,7 +98,6 @@ export default function Chat() {
 
     return (
         <div data-theme="forest" className="min-h-screen w-full flex flex-col">
-            <Navbar />
             <main className="flex-1 container mx-auto px-4 py-8">
                 <div className="w-full max-w-[1200px] mx-auto">
                     {/* Toggle Switch */}
