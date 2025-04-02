@@ -11,8 +11,8 @@ import { TimelineDemo } from "@/components/time";
 import BidirectionalSlider from "@/components/bidirectionalslider";
 // Removed useState and useEffect
 
-const NEWS_API = "https://triphla-yv9t.onrender.com/api/stock-news";
-
+const NEWS_API= process.VITE_NEWS_API || "https://triphla-yv9t.onrender.com/";
+=======
 async function fetchNews() {
   try {
     // Using fetch API for server-side fetching and revalidation (ISR)
