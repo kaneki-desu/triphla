@@ -14,7 +14,7 @@ import BidirectionalSlider from "@/components/bidirectionalslider";
 import { useState } from "react";
 
 
-const NEWS_API= process.VITE_NEWS_API || "http://localhost:8000/api/stock-news";
+const NEWS_API= process.VITE_NEWS_API || "https://triphla-yv9t.onrender.com/";
 
 export default function Home() {
   
