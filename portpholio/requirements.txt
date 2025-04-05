@@ -1,10 +1,10 @@
-python-multipart
+fastapi
+uvicorn
 yfinance
+pandas
 numpy
 scikit-learn
-requests
-pydantic
-openpyxl
+groq
+python-dotenv
 duckduckgo-search
-phidata
-uvicorn
+pydantic
