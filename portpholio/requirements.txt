@@ -7,3 +7,4 @@ pydantic
 openpyxl
 duckduckgo-search
 phidata
+uvicorn
