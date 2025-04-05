@@ -9,10 +9,10 @@ import OutlineButton from "@/components/outlinebutton";
 import Squares from "@/components/backgroundPaths";
 import { TimelineDemo } from "@/components/time";
 import BidirectionalSlider from "@/components/bidirectionalslider";
+import { Newspaper } from "lucide-react";
 // Removed useState and useEffect
 
-const NEWS_API = "https://triphla-yv9t.onrender.com/api/stock-news";
-
+const NEWS_API= process.VITE_NEWS_API || "https://triphla-yv9t.onrender.com/api/stock-news";
 async function fetchNews() {
   try {
     // Using fetch API for server-side fetching and revalidation (ISR)
@@ -32,8 +32,8 @@ async function fetchNews() {
       console.error("Error body:", errorBody);
       return null; // Return null or throw an error
     }
-
     const newsData = await response.json();
+    console.log(newsData);
     return newsData;
   } catch (error) {
     console.error("Error fetching stock news:", error);
