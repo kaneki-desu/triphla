@@ -1,0 +1,9 @@
+python-multipart
+yfinance
+numpy
+scikit-learn
+requests
+pydantic
+openpyxl
+duckduckgo-search
+phidata

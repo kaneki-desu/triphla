@@ -2,8 +2,9 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const QUIZ_API = process.env.NEXT_PUBLIC_QUIZ_API || "http://localhost:8000/quiz";
+const QUIZ_API = process.env.NEXT_PUBLIC_QUIZ_API || "https://triphla-quiz.onrender.com/quiz";
 
+console.log(QUIZ_API)
 export default function QuizComponent() {
     const [questions, setQuestions] = useState([]);
     const [loading, setLoading] = useState(false);
