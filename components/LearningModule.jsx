@@ -294,7 +294,7 @@ const TermMatchingSection = ({ section }) => {
 };
 
 // --- Congratulation Component ---
-const CongratulationSection = () => (
+const CongratulationSection = ({ onContinueLearning, currentModuleTitle, nextModuleTitle }) => (
     <div className="space-y-6">
         <div className="bg-amber-950/60 p-8 rounded-lg border border-amber-800/40 shadow-lg text-center">
             <motion.div
@@ -306,19 +306,26 @@ const CongratulationSection = () => (
             </motion.div>
             <h3 className="text-4xl font-bold mb-6 text-amber-200">Congratulations!</h3>
             <p className="text-2xl text-amber-100/90 leading-relaxed mb-8">
-                You've successfully completed this section of the financial learning module!
+                You've successfully completed the {currentModuleTitle} module!
+                {nextModuleTitle && (
+                    <span className="block mt-4">
+                        Ready to learn about <span className="font-bold text-amber-300">{nextModuleTitle}</span>?
+                    </span>
+                )}
             </p>
             <motion.div
                 className="inline-block"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
             >
-                <Button className="bg-gradient-to-r from-amber-500 to-amber-600 
-                    hover:from-amber-600 hover:to-amber-700
-                    text-amber-50 py-3 px-6 text-lg font-medium rounded-lg
-                    shadow-lg hover:shadow-xl
-                    border border-amber-500
-                    transition-all duration-300">
+                <Button 
+                    onClick={onContinueLearning}
+                    className="bg-gradient-to-r from-amber-500 to-amber-600 
+                        hover:from-amber-600 hover:to-amber-700
+                        text-amber-50 py-3 px-6 text-lg font-medium rounded-lg
+                        shadow-lg hover:shadow-xl
+                        border border-amber-500
+                        transition-all duration-300">
                     Continue Learning
                 </Button>
             </motion.div>
@@ -334,6 +341,7 @@ const LearningModule = ({ initialTopic = 'stockMarket' }) => { // Accept initial
     const [quizAnswers, setQuizAnswers] = useState({});
     const [showFeedback, setShowFeedback] = useState(false);
     const [customSections, setCustomSections] = useState(null); // To store modified sections with congratulation
+    const [nextBtnInvalid, setNextBtnInvalid] = useState(false); // State to manage next button invalid state
     // Term matching state is now inside TermMatchingSection
 
     // Reset state when topic changes
@@ -343,7 +351,12 @@ const LearningModule = ({ initialTopic = 'stockMarket' }) => { // Accept initial
         setShowFeedback(false);
         setCustomSections(null);
         // Reset term matching state if it were managed here
+
     }, [currentTopicKey]);
+
+        useEffect(() => {
+            currentSectionIndex !== 4 ? setNextBtnInvalid(false) : setNextBtnInvalid(true);
+        },[currentSectionIndex])
 
     const currentModule = learningModulesData[currentTopicKey];
     if (!currentModule) {
@@ -399,6 +412,40 @@ const LearningModule = ({ initialTopic = 'stockMarket' }) => { // Accept initial
         }
     };
 
+    // Function to get the next module key in sequence
+    const getNextModuleKey = () => {
+        const moduleKeys = Object.keys(learningModulesData);
+        const currentIndex = moduleKeys.indexOf(currentTopicKey);
+        
+        // If current module is the last one or not found, return null
+        if (currentIndex === -1 || currentIndex === moduleKeys.length - 1) {
+            return null;
+        }
+        
+        // Return the next module key
+        return moduleKeys[currentIndex + 1];
+    };
+    
+    // Function to handle continue learning button click
+    const handleContinueLearning = () => {
+        const nextModuleKey = getNextModuleKey();
+        
+        if (nextModuleKey) {
+            // Load the next module and reset to first slide
+            setCurrentTopicKey(nextModuleKey);
+            setCurrentSectionIndex(0);
+            setQuizAnswers({});
+            setShowFeedback(false);
+            setCustomSections(null);
+        } else {
+            // If there's no next module, just reset to the first slide of current module
+            setCurrentSectionIndex(0);
+            setQuizAnswers({});
+            setShowFeedback(false);
+            setCustomSections(null);
+        }
+    };
+
     // Function to render the correct section component based on type
     const renderSectionContent = (section) => {
         switch (section.type) {
@@ -418,7 +465,13 @@ const LearningModule = ({ initialTopic = 'stockMarket' }) => { // Accept initial
                 // Pass necessary props if term matching state was managed here
                 return <TermMatchingSection section={section} />; 
             case 'congratulation':
-                return <CongratulationSection />;
+                const nextModuleKey = getNextModuleKey();
+                const nextModuleTitle = nextModuleKey ? learningModulesData[nextModuleKey].title : null;
+                return <CongratulationSection 
+                            onContinueLearning={handleContinueLearning}
+                            currentModuleTitle={currentModule.title}
+                            nextModuleTitle={nextModuleTitle}
+                        />;
             default:
                 return <div className="flex items-center gap-2 text-amber-300"><HelpCircle className="w-5 h-5" /> Unknown section type: {section.type}</div>;
         }
@@ -487,7 +540,7 @@ const LearningModule = ({ initialTopic = 'stockMarket' }) => { // Accept initial
                         </div>
                         <Button
                             onClick={handleNextClick}
-                            disabled={currentSection === sections.length - 1 && !isCurrentSectionCompleted()}
+                            disabled={nextBtnInvalid}
                             className={`
                                 bg-gradient-to-r from-amber-500 to-amber-600 
                                 hover:from-amber-600 hover:to-amber-700
@@ -496,7 +549,7 @@ const LearningModule = ({ initialTopic = 'stockMarket' }) => { // Accept initial
                                 flex items-center gap-2
                                 border border-amber-500
                                 transition-all duration-300
-                                ${currentSection === sections.length - 1 && !isCurrentSectionCompleted() ? 'opacity-50 cursor-not-allowed' : 'transform hover:translate-x-1'}
+                                ${nextBtnInvalid ? 'opacity-50 cursor-not-allowed' : 'transform hover:translate-x-1'}
                             `}
                         >
                             Next
@@ -547,12 +600,11 @@ const LearningModule = ({ initialTopic = 'stockMarket' }) => { // Accept initial
                                 Progress: {Math.round(((currentSectionIndex + 1) / sections.length) * 100)}%
                             </span>
                         </div>
-                    </div>
-                    )} 
+                        </div>)
+                    }
                 </Card>
             </div>
         </motion.div>
     );
-};
-
+}
 export default LearningModule;

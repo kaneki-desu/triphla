@@ -1,7 +1,6 @@
 'use client';
-import LearningModule from '@/components/LearningModule';
+import LearningModule from '@/components/LearningModule.jsx';
 import QuizComponent from '@/components/QuizComponent';
-import Navbar from "@/components/Navbar";
 import { useUser } from "@clerk/nextjs";
 
 export default function LearnPage() {
