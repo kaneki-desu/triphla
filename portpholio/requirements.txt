@@ -8,3 +8,4 @@ groq
 python-dotenv
 duckduckgo-search
 pydantic
+phidata
