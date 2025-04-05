@@ -81,6 +81,22 @@ def read_root():
     return {"message": "Hello, World!"}
 # ✅ Financial Planning Agent (Creates Investment & Savings Strategy)
 try:
+    financial_chat_agent = Agent(
+        name="Financial Chat Agent",
+        role="Help users clear there financial doubts and queries.",
+        model=Groq(id="gemma2-9b-it", api_key=GROQ_API_KEY),
+        instructions=[
+        "Answer user financial questions in a clear and beginner-friendly way.",
+        "Provide explanations of financial terms, concepts, and strategies.",
+        "Use examples, analogies, and markdown formatting where helpful.",
+        "Suggest tools, tips, or resources that can help the user make informed decisions.",
+        "Be concise, supportive, and conversational in tone.",
+        "Avoid giving direct financial or investment advice unless asked explicitly.",
+        "When possible, include markdown tables or bullet points for clarity."
+    ],
+        show_tools_calls=True,
+        markdown=True,
+    )
     financial_planning_agent = Agent(
         name="Financial Planning Agent",
         role="Generates detailed financial plans with investment recommendations.",
@@ -404,7 +420,7 @@ async def chat(message: ChatMessage):
             raise HTTPException(status_code=400, detail="Message cannot be empty")
 
         # Get response from financial planning agent
-        response = await financial_planning_agent.arun(message.message)
+        response = await financial_chat_agent.arun(message.message)
         
         # Extract text content from RunResponse
         response_text = response.content if hasattr(response, 'content') else str(response)
