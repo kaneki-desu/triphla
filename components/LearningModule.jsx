@@ -293,6 +293,39 @@ const TermMatchingSection = ({ section }) => {
     );
 };
 
+// --- Congratulation Component ---
+const CongratulationSection = () => (
+    <div className="space-y-6">
+        <div className="bg-amber-950/60 p-8 rounded-lg border border-amber-800/40 shadow-lg text-center">
+            <motion.div
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ duration: 0.5 }}
+            >
+                <Trophy className="w-24 h-24 mx-auto text-amber-400 mb-6" />
+            </motion.div>
+            <h3 className="text-4xl font-bold mb-6 text-amber-200">Congratulations!</h3>
+            <p className="text-2xl text-amber-100/90 leading-relaxed mb-8">
+                You've successfully completed this section of the financial learning module!
+            </p>
+            <motion.div
+                className="inline-block"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+            >
+                <Button className="bg-gradient-to-r from-amber-500 to-amber-600 
+                    hover:from-amber-600 hover:to-amber-700
+                    text-amber-50 py-3 px-6 text-lg font-medium rounded-lg
+                    shadow-lg hover:shadow-xl
+                    border border-amber-500
+                    transition-all duration-300">
+                    Continue Learning
+                </Button>
+            </motion.div>
+        </div>
+    </div>
+);
+
 // --- Main Learning Module Component ---
 
 const LearningModule = ({ initialTopic = 'stockMarket' }) => { // Accept initial topic as prop
@@ -300,6 +333,7 @@ const LearningModule = ({ initialTopic = 'stockMarket' }) => { // Accept initial
     const [currentSectionIndex, setCurrentSectionIndex] = useState(0);
     const [quizAnswers, setQuizAnswers] = useState({});
     const [showFeedback, setShowFeedback] = useState(false);
+    const [customSections, setCustomSections] = useState(null); // To store modified sections with congratulation
     // Term matching state is now inside TermMatchingSection
 
     // Reset state when topic changes
@@ -307,6 +341,7 @@ const LearningModule = ({ initialTopic = 'stockMarket' }) => { // Accept initial
         setCurrentSectionIndex(0);
         setQuizAnswers({});
         setShowFeedback(false);
+        setCustomSections(null);
         // Reset term matching state if it were managed here
     }, [currentTopicKey]);
 
@@ -314,8 +349,55 @@ const LearningModule = ({ initialTopic = 'stockMarket' }) => { // Accept initial
     if (!currentModule) {
         return <div>Error: Topic not found!</div>; // Handle invalid topic
     }
-    const sections = currentModule.sections;
+    
+    // Use custom sections if available, otherwise use the original sections
+    const sections = customSections || currentModule.sections;
     const currentSection = sections[currentSectionIndex];
+
+    // Check if the current section is completed
+    const isCurrentSectionCompleted = () => {
+        if (!currentSection) return false;
+        
+        switch (currentSection.type) {
+            case 'introduction':
+                return true; // Introduction is always considered completed
+            case 'quiz':
+                return showFeedback && currentSection.questions.every((q, index) => quizAnswers[index] === q.correctAnswerIndex);
+            case 'funFacts':
+                return true; // Fun facts are always considered completed
+            case 'termMatching':
+                // We don't have direct access to the matches state here, so we'll consider it completed
+                // In a real app, you might want to pass a callback from TermMatchingSection to update a state here
+                return true;
+            case 'congratulation':
+                return true; // Congratulation is always considered completed
+            default:
+                return false;
+        }
+    };
+
+    // Function to handle next button click
+    const handleNextClick = () => {
+        if (isCurrentSectionCompleted()) {
+            // If this is the last section, add congratulation section
+            if (currentSectionIndex === sections.length - 1) {
+                // Create a new array with all existing sections plus the congratulation section
+                const newSections = [...sections, {
+                    type: 'congratulation',
+                    title: 'Congratulations!'
+                }];
+                
+                setCustomSections(newSections);
+                setCurrentSectionIndex(sections.length); // Move to the new congratulation section
+            } else {
+                // Otherwise move to next section
+                setCurrentSectionIndex(prev => Math.min(sections.length - 1, prev + 1));
+            }
+        } else {
+            // If section not completed, just move to next section as before
+            setCurrentSectionIndex(prev => Math.min(sections.length - 1, prev + 1));
+        }
+    };
 
     // Function to render the correct section component based on type
     const renderSectionContent = (section) => {
@@ -335,6 +417,8 @@ const LearningModule = ({ initialTopic = 'stockMarket' }) => { // Accept initial
             case 'termMatching':
                 // Pass necessary props if term matching state was managed here
                 return <TermMatchingSection section={section} />; 
+            case 'congratulation':
+                return <CongratulationSection />;
             default:
                 return <div className="flex items-center gap-2 text-amber-300"><HelpCircle className="w-5 h-5" /> Unknown section type: {section.type}</div>;
         }
@@ -402,8 +486,8 @@ const LearningModule = ({ initialTopic = 'stockMarket' }) => { // Accept initial
                             ))}
                         </div>
                         <Button
-                            onClick={() => setCurrentSectionIndex(prev => Math.min(sections.length - 1, prev + 1))}
-                            disabled={currentSection === sections.length - 1}
+                            onClick={handleNextClick}
+                            disabled={currentSection === sections.length - 1 && !isCurrentSectionCompleted()}
                             className={`
                                 bg-gradient-to-r from-amber-500 to-amber-600 
                                 hover:from-amber-600 hover:to-amber-700
@@ -412,7 +496,7 @@ const LearningModule = ({ initialTopic = 'stockMarket' }) => { // Accept initial
                                 flex items-center gap-2
                                 border border-amber-500
                                 transition-all duration-300
-                                ${currentSection === sections.length - 1 ? 'opacity-50 cursor-not-allowed' : 'transform hover:translate-x-1'}
+                                ${currentSection === sections.length - 1 && !isCurrentSectionCompleted() ? 'opacity-50 cursor-not-allowed' : 'transform hover:translate-x-1'}
                             `}
                         >
                             Next
