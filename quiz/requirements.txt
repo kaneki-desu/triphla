@@ -4,4 +4,4 @@ groq
 python-dotenv
 pydantic
 python-multipart
-phi-python
+phidata
