@@ -6,7 +6,7 @@ import {ThemeToggleButton} from "./ui/theme-toggle-button"; // Corrected import 
 export default function Navbar() {
     return (
         // Added background, padding, border, and ensured items are centered vertically
-        <nav className="flex justify-between items-center px-6 py-3 bg-background  border-b border-border sticky top-0 z-50">
+        <nav className="flex justify-between items-center px-6 py-5 bg-background  border-b border-border sticky top-0 z-50">
             {/* Adjusted logo section spacing and alignment */}
             <div className="flex items-center px-3">
                 <div className="bg-white w-10 h-10 rounded-full flex items-center justify-center overflow-hidden"> {/* Made height explicit */}
