@@ -4,9 +4,7 @@ import Link from 'next/link'; // Import Link for navigation
 
 const BidirectionalSlider = ({ news }) => {
   // Handle potential null/empty news prop gracefully
-  if (!news || news.length === 0) {
-    return <div className="text-center p-4">No news available.</div>;
-  }
+
 
   // Split the news array into two halves
   const midpoint = Math.ceil(news.length / 2);
@@ -45,9 +43,11 @@ const BidirectionalSlider = ({ news }) => {
     const animationId = setInterval(animateSliders, 20); // Slightly slower interval
     return () => clearInterval(animationId);
   }, [news1.length, news2.length, rightPosition2, totalWidth2]); // Depend on lengths of news arrays
-
+  if (!news || news.length === 0) {
+    return <div className="text-center p-4">No news available.</div>;
+  }
   return (
-    <div className="relative w-full overflow-hidden h-96">
+    <div className="relative w-full overflow-hidden h-72">
       {/* Top slider (left to right) */}
       <div
         className="absolute flex"
@@ -60,13 +60,13 @@ const BidirectionalSlider = ({ news }) => {
             ? "bg-[radial-gradient(ellipse_at_center,_rgba(255,255,255,0)_0%,_rgba(34,197,94,0.3)_95%)]" // Base to Green (semi-transparent)
             : "bg-[radial-gradient(ellipse_at_center,_rgba(255,255,255,0)_0%,_rgba(239,68,68,0.3)_95%)]"; // Base to Red (semi-transparent)
           return (
-            <div key={`slider1-${index}`} className={`min-w-[${ITEM_WIDTH}px] h-40 p-2`}>
+            <div key={`slider1-${index}`} className={`min-w-[${ITEM_WIDTH}px] h-36 p-2`}>
               {/* Apply radial gradient style class */}
+                <Link href={newsItem.link} target="_blank" rel="noopener noreferrer" className="  hover:underline"> {/* Keep text black for now */}
               <div className={`w-full h-full rounded-lg ${gradientStyle} p-4 flex items-center justify-center text-center overflow-hidden`}>
-                <Link href={newsItem.link} target="_blank" rel="noopener noreferrer" className="hover:underline text-lg"> {/* Keep text black for now */}
                   {newsItem.headline}
-                </Link>
               </div>
+                </Link>
             </div>
           );
         })}
@@ -74,7 +74,7 @@ const BidirectionalSlider = ({ news }) => {
 
       {/* Bottom slider (right to left) */}
       <div
-        className="absolute flex top-44" // Adjust top position if needed
+        className="absolute flex top-36" // Adjust top position if needed
         style={{ transform: `translateX(${rightPosition2}px)`, whiteSpace: "nowrap" }}
       >
         {/* Use news2 for the bottom slider */}
@@ -84,13 +84,13 @@ const BidirectionalSlider = ({ news }) => {
              ? "bg-[radial-gradient(ellipse_at_center,_rgba(255,255,255,0),_rgba(34,197,94,0.3)_95%)]" // White to Green (semi-transparent)
              : "bg-[radial-gradient(ellipse_at_center,_rgba(255,255,255,0),_rgba(239,68,68,0.3)_95%)]"; // White to Red (semi-transparent)
            return (
-             <div key={`slider2-${index}`} className={`min-w-[${ITEM_WIDTH}px] h-40 p-2`}>
+             <div key={`slider2-${index}`} className={`min-w-[${ITEM_WIDTH}px] h-36 p-2`}>
                {/* Apply radial gradient style class */}
+                 <Link href={newsItem.link} target="_blank" rel="noopener noreferrer" className="  hover:underline"> {/* Keep text black for now */}
                <div className={`w-full h-full rounded-lg ${gradientStyle} p-4 flex items-center justify-center text-center overflow-hidden`}>
-                 <Link href={newsItem.link} target="_blank" rel="noopener noreferrer" className="hover:underline text-lg"> {/* Keep text black for now */}
                    {newsItem.headline}
-                 </Link>
                </div>
+                 </Link>
              </div>
            );
         })}

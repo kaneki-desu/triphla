@@ -46,14 +46,6 @@ export default async function Home() {
   const news = await fetchNews(); // Fetch data on the server
   const newsArr= JSON.parse(news); // Parse the news data
   console.log("Parsed news data:", typeof(newsArr)); // Log the parsed data
-  const images = [
-    { src: '/images/image1.jpg', alt: 'Image 1' },
-    { src: '/images/image2.jpg', alt: 'Image 2' },
-    { src: '/images/image3.jpg', alt: 'Image 3' },
-    { src: '/images/image4.jpg', alt: 'Image 4' },
-    { src: '/images/image5.jpg', alt: 'Image 5' },
-    { src: '/images/image6.jpg', alt: 'Image 6' },
-  ];
 
   return (
     
@@ -87,11 +79,11 @@ export default async function Home() {
 
 
       <div className="w-full">
-          <h2 className="text-3xl font-bold text-center mb-4">Latest News</h2> {/* Added a title */}
+          {/* <h2 className="text-5xl font-bold text-center my-8">Latest News</h2> Added a title */}
           {/* Pass fetched news data to the slider */}
           {/*news ? <BidirectionalSlider news={news} /> : <p>Loading news...</p>*/}
           {/* If BidirectionalSlider also needs images, pass them too */}
-          <BidirectionalSlider images={images} news={newsArr} />
+          <BidirectionalSlider  news={newsArr} />
         </div>
       {/* <div className="flex gap-3  mb-3">
         <div className="relative rounded-xl w-[45vw] h-[25.6vw] overflow-hidden">

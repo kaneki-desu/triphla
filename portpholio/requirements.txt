@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+yfinance
+pandas
+numpy
+scikit-learn
+groq
+python-dotenv
+duckduckgo-search
+pydantic
+phidata

@@ -162,7 +162,7 @@ export function TimelineDemo() {
       <li className="flex items-start">
         <span className="text-blue-500 text-lg">🔹</span>
         <p className="ml-2 text-neutral-700 dark:text-neutral-300">
-          <strong>AI Insights & Recommendations</strong> – Personalized suggestions based on your portfolio’s risk, 
+          <strong>AI Insights & Recommendations</strong> – Personalized suggestions based on your portfolio's risk, 
           stock performance, and market trends. AI highlights key areas like sector concentration and major price movements.
         </p>
       </li>
@@ -257,17 +257,17 @@ export function TimelineDemo() {
           </div>
           <p className="text-neutral-800 dark:text-neutral-200 text-xs md:text-sm font-normal mt-4">
   
-  <strong>Financial Learning Module – Interactive & Engaging Financial Education</strong>  
+  <strong>Financial Learning Module &ndash; Interactive &amp; Engaging Financial Education</strong>  
   <br /><br />
   The Financial Learning Module offers an engaging and interactive approach to understanding key financial concepts. Through structured content and hands-on activities, users can enhance their financial literacy while enjoying the learning process.  
   <br /><br />
-  🔹 <strong>Introduction to the Stock Market</strong> – This section provides a comprehensive overview of the stock market, detailing its functions and significance in the global economy. Users gain insights into key benefits such as capital growth, diversification, and dividend income, while also understanding potential risks like market volatility and economic downturns.  
+  🔹 <strong>Introduction to the Stock Market</strong> &ndash; This section provides a comprehensive overview of the stock market, detailing its functions and significance in the global economy. Users gain insights into key benefits such as capital growth, diversification, and dividend income, while also understanding potential risks like market volatility and economic downturns.  
   <br /><br />
-  🔹 <strong>Fun Facts & Insights</strong> – Explore fascinating financial facts that make learning enjoyable. This section presents historical insights, including the establishment of the first stock exchange in Amsterdam in 1602, and explains why a rising market is referred to as a "bull market." These engaging facts enhance financial awareness and spark curiosity.  
+  🔹 <strong>Fun Facts &amp; Insights</strong> &ndash; Explore fascinating financial facts that make learning enjoyable. This section presents historical insights, including the establishment of the first stock exchange in Amsterdam in 1602, and explains why a rising market is referred to as a &ldquo;bull market.&rdquo; These engaging facts enhance financial awareness and spark curiosity.  
   <br /><br />
-  🔹 <strong>Interactive Quiz</strong> – Reinforce knowledge through a multiple-choice quiz covering essential financial topics such as stock definitions, market capitalization, and investment principles. This interactive approach ensures better retention and deeper understanding.  
+  🔹 <strong>Interactive Quiz</strong> &ndash; Reinforce knowledge through a multiple-choice quiz covering essential financial topics such as stock definitions, market capitalization, and investment principles. This interactive approach ensures better retention and deeper understanding.  
   <br /><br />
-  🔹 <strong>Term Matching Activity</strong> – Strengthen financial vocabulary through an interactive matching exercise. Users connect key financial terms such as "stock market," "dividend," "bull market," and "bear market" with their correct definitions, making complex concepts easier to grasp.  
+  🔹 <strong>Term Matching Activity</strong> &ndash; Strengthen financial vocabulary through an interactive matching exercise. Users connect key financial terms such as &ldquo;stock market,&rdquo; &ldquo;dividend,&rdquo; &ldquo;bull market,&rdquo; and &ldquo;bear market&rdquo; with their correct definitions, making complex concepts easier to grasp.  
   <br /><br />
   With structured content, engaging visuals, and hands-on exercises, the Financial Learning Module serves as a valuable tool for individuals looking to improve their financial literacy in an accessible and effective way.  
 </p>
