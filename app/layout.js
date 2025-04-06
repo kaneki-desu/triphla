@@ -6,7 +6,7 @@ import Navbar from "@/components/Navbar";
 
 export default function RootLayout({ children }) {
   return (
-    <ClerkProvider publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}>
+    <ClerkProvider publishableKey={"pk_test_cGF0aWVudC1za3Vuay00OC5jbGVyay5hY2NvdW50cy5kZXYk"}>
       <html lang="en" className="scroll-smooth" suppressHydrationWarning> {/* Add suppressHydrationWarning */}
         <head>
           {/* <link rel="icon" href="/dall.png" /> */}
