@@ -4,7 +4,9 @@ import Link from 'next/link'; // Import Link for navigation
 
 const BidirectionalSlider = ({ news }) => {
   // Handle potential null/empty news prop gracefully
-
+  if (!news || news.length === 0) {
+    return <div className="text-center p-4">No news available.</div>;
+  }
 
   // Split the news array into two halves
   const midpoint = Math.ceil(news.length / 2);
@@ -43,9 +45,7 @@ const BidirectionalSlider = ({ news }) => {
     const animationId = setInterval(animateSliders, 20); // Slightly slower interval
     return () => clearInterval(animationId);
   }, [news1.length, news2.length, rightPosition2, totalWidth2]); // Depend on lengths of news arrays
-  if (!news || news.length === 0) {
-    return <div className="text-center p-4">No news available.</div>;
-  }
+  
   return (
     <div className="relative w-full overflow-hidden h-72">
       {/* Top slider (left to right) */}
