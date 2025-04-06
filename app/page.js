@@ -10,6 +10,7 @@ import Squares from "@/components/backgroundPaths";
 import { TimelineDemo } from "@/components/time";
 import BidirectionalSlider from "@/components/bidirectionalslider";
 import { Newspaper } from "lucide-react";
+import Footer from "./components/footer";
 // Removed useState and useEffect
 
 const NEWS_API= process.VITE_NEWS_API || "https://triphla-yv9t.onrender.com/api/stock-news";
@@ -125,6 +126,10 @@ export default async function Home() {
       {/* <div className="absolute mb-3 mx-3 rounded-xl overflow-hidden"> */}
         <TimelineDemo />
       {/* </div> */}
+      <Footer />
     </div>
+    
+    
+    
   );
 }
