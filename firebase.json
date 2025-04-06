@@ -8,6 +8,11 @@
     ],
     "frameworksBackend": {
       "region": "asia-east1"
+      "env": {
+     "NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY": "pk_test_cGF0aWVudC1za3Vuay00OC5jbGVyay5hY2NvdW50cy5kZXYk"
+       }
+
+
     }
   }
 }
