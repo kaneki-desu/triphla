@@ -10,4 +10,4 @@ ddgs
 httpx==0.27.0
 python-multipart==0.0.6
 # PYTHON_VERSION=3.10.6
-dotenv
+python-dotenv>=1.0.0
