@@ -4,7 +4,6 @@ import Link from 'next/link'; // Import Link for navigation
 
 const BidirectionalSlider = ({ news = [] }) => {
   // 🛑 EARLY EXIT — before using news.length
-  console.log(news , !Array.isArray(news), typeof news)
   if (!Array.isArray(news) || news.length === 0) {
     return (
       <div className="h-72 flex items-center justify-center text-gray-400">
