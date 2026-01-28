@@ -43,3 +43,6 @@ next-env.d.ts
 # clerk configuration (can include secrets)
 /.clerk/
 /apphosting.yaml
+/lib/generated/prisma
+
+/lib/generated/prisma

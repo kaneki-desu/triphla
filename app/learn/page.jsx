@@ -1,31 +1,29 @@
 'use client';
 import LearningModule from '@/components/LearningModule.jsx';
 import QuizComponent from '@/components/QuizComponent';
-import { useUser } from "@clerk/nextjs";
 import { BookOpenCheck, HelpCircle } from 'lucide-react';
 
 export default function LearnPage() {
-  const { user } = useUser();
 
-  if (!user) {
-    return (
-      <div data-theme="coffee" className="min-h-screen w-full bg-base-200">
-        <div className="flex items-center justify-center min-h-[80vh] px-4">
-          <div className="text-center p-6 sm:p-8 bg-base-100 rounded-lg shadow-xl w-full max-w-md">
-            <h1 className="text-xl sm:text-2xl font-semibold mb-4 text-content-primary">
-              Please sign in to access the learning center
-            </h1>
-            <button
-              className="btn btn-primary w-full sm:w-auto"
-              onClick={() => window.location.href = '/sign-in'}
-            >
-              Sign In
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  // if (!user) {
+  //   return (
+  //     <div data-theme="coffee" className="min-h-screen w-full bg-base-200">
+  //       <div className="flex items-center justify-center min-h-[80vh] px-4">
+  //         <div className="text-center p-6 sm:p-8 bg-base-100 rounded-lg shadow-xl w-full max-w-md">
+  //           <h1 className="text-xl sm:text-2xl font-semibold mb-4 text-content-primary">
+  //             Please sign in to access the learning center
+  //           </h1>
+  //           <button
+  //             className="btn btn-primary w-full sm:w-auto"
+  //             onClick={() => window.location.href = '/sign-in'}
+  //           >
+  //             Sign In
+  //           </button>
+  //         </div>
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div

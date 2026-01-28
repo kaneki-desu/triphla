@@ -1,0 +1,123 @@
+═══════════════════════════════════════════════════════════════════════════
+                    READY TO RUN! COPY & PASTE COMMANDS
+═══════════════════════════════════════════════════════════════════════════
+
+🖥️  WINDOWS USERS
+═════════════════════════════════════════════════════════════════════════════
+
+Quick Setup (automatic):
+  setup.bat
+
+Manual Setup:
+  pip install -r requirements.txt
+  copy .env.example .env
+
+Add your API key to .env, then run:
+  python main.py
+
+Docker (if you have Docker installed):
+  docker-compose up -d
+
+═════════════════════════════════════════════════════════════════════════════
+
+🐧 LINUX / MAC USERS
+═════════════════════════════════════════════════════════════════════════════
+
+Quick Setup (automatic):
+  chmod +x setup.sh
+  ./setup.sh
+
+Manual Setup:
+  python3 -m venv venv
+  source venv/bin/activate
+  pip install -r requirements.txt
+  cp .env.example .env
+
+Add your API key to .env, then run:
+  python main.py
+
+Docker:
+  docker-compose up -d
+
+═════════════════════════════════════════════════════════════════════════════
+
+🧪 TEST THE API (After running python main.py)
+═════════════════════════════════════════════════════════════════════════════
+
+In a new terminal/command prompt:
+
+Health Check:
+  curl http://localhost:8000/health
+
+Chat:
+  curl -X POST http://localhost:8000/api/chat -H "Content-Type: application/json" -d "{\"message\": \"How should I invest?\"}"
+
+Quiz:
+  curl -X POST http://localhost:8000/api/quiz -H "Content-Type: application/json" -d "{\"num_questions\": 3, \"topic\": \"finance\"}"
+
+Facts:
+  curl -X POST http://localhost:8000/api/fact
+
+News:
+  curl -X POST http://localhost:8000/api/stock-news
+
+View API Docs (Browser):
+  http://localhost:8000/docs
+  http://localhost:8000/redoc
+
+═════════════════════════════════════════════════════════════════════════════
+
+🐳 DOCKER DEPLOYMENT
+═════════════════════════════════════════════════════════════════════════════
+
+Start:
+  docker-compose up -d
+
+Check logs:
+  docker-compose logs -f
+
+Stop:
+  docker-compose down
+
+Restart:
+  docker-compose restart
+
+═════════════════════════════════════════════════════════════════════════════
+
+🔑 IMPORTANT: Add Your API Key
+═════════════════════════════════════════════════════════════════════════════
+
+Edit .env file and add:
+  GROQ_API_KEY=your_actual_api_key_here
+
+Get your key from: https://console.groq.com/keys
+
+═════════════════════════════════════════════════════════════════════════════
+
+✅ VERIFY EVERYTHING IS WORKING
+═════════════════════════════════════════════════════════════════════════════
+
+After running python main.py, you should see:
+  ✅ All agents initialized successfully
+  ✅ FinBERT model loaded successfully
+  INFO: Uvicorn running on http://0.0.0.0:8000
+
+Then visit:
+  http://localhost:8000/docs
+
+You should see interactive API documentation with all endpoints!
+
+═════════════════════════════════════════════════════════════════════════════
+
+🎯 SUMMARY
+═════════════════════════════════════════════════════════════════════════════
+
+✓ All 3 apps (chatbot, quiz, news) are now ONE service
+✓ Running on single port: 8000
+✓ All endpoints work together
+✓ Ready for production with Docker
+✓ Professional, clean, maintainable code
+
+That's it! You're done! 🚀
+
+═════════════════════════════════════════════════════════════════════════════

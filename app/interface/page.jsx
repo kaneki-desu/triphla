@@ -2,7 +2,6 @@
 
 import { useState, useRef, useEffect } from 'react';
 import Navbar from "@/components/Navbar"; // Assuming Navbar is still needed, otherwise remove
-import { useUser } from "@clerk/nextjs";
 import { motion, AnimatePresence } from 'framer-motion';
 import { Switch } from "@/components/ui/switch";
 import { MessageSquare, Calculator, Bot, BarChartHorizontalBig } from 'lucide-react'; // Added icons
@@ -77,7 +76,6 @@ const Chatbot = ({ messages, input, setInput, handleSubmit, isLoading, messagesE
 
 
 export default function InterfacePage() { // Renamed component
-    const { user } = useUser();
     const [isChatMode, setIsChatMode] = useState(true); // Default to Chat Mode
     const [messages, setMessages] = useState([
         {
@@ -144,21 +142,21 @@ export default function InterfacePage() { // Renamed component
         }
     };
 
-    if (!user) {
-        return (
-            <div data-theme="forest" className="min-h-screen w-full bg-base-200">
-                {/* <Navbar /> */}
-                <div className="flex items-center justify-center min-h-[80vh]">
-                    <div className="text-center p-8 bg-base-100 rounded-lg shadow-xl">
-                        <h1 className="text-2xl font-semibold mb-4 text-base-content">Please sign in to access the financial tools</h1>
-                        <button className="btn btn-primary" onClick={() => window.location.href = '/sign-in'}>
-                            Sign In
-                        </button>
-                    </div>
-                </div>
-            </div>
-        );
-    }
+    // if (!user) {
+    //     return (
+    //         <div data-theme="forest" className="min-h-screen w-full bg-base-200">
+    //             {/* <Navbar /> */}
+    //             <div className="flex items-center justify-center min-h-[80vh]">
+    //                 <div className="text-center p-8 bg-base-100 rounded-lg shadow-xl">
+    //                     <h1 className="text-2xl font-semibold mb-4 text-base-content">Please sign in to access the financial tools</h1>
+    //                     <button className="btn btn-primary" onClick={() => window.location.href = '/sign-in'}>
+    //                         Sign In
+    //                     </button>
+    //                 </div>
+    //             </div>
+    //         </div>
+    //     );
+    // }
 
     return (
         <div data-theme="forest" className="min-h-screen w-full flex flex-col bg-gradient-to-b from-base-300 via-base-200 to-base-300 text-base-content">

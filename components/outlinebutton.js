@@ -1,4 +1,4 @@
-import { SignInButton } from "@clerk/nextjs";
+
 import "remixicon/fonts/remixicon.css";
 
 export default function AnimatedLinkComponent() {
@@ -70,7 +70,7 @@ export default function AnimatedLinkComponent() {
                 `}
       </style>
 
-      <SignInButton mode="modal">
+      {/* <SignInButton mode="modal"> */}
         <div style={animatedLinkWrapper}>
           {/* Outer rotating outline */}
           <div style={animatedLinkEffect}>
@@ -85,7 +85,7 @@ export default function AnimatedLinkComponent() {
             </span>
           </div>
         </div>
-      </SignInButton>
+      {/* </SignInButton> */}
     </>
   );
 }

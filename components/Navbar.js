@@ -1,12 +1,11 @@
 "use client";
-
 import Link from "next/link";
-import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
-import { SignInButton, UserButton, SignedIn, SignedOut } from "@clerk/nextjs";
 import { ThemeToggleButton } from "./ui/theme-toggle-button";
 import AudioPlayer from './AudioPlayer';
+import LoginModal from "./LoginModal";
+import {  signOut, useSession } from "next-auth/react";
 
 export default function Navbar() {
   const navbarRef = useRef(null);
@@ -14,7 +13,7 @@ export default function Navbar() {
   const linksRef = useRef(null);
   const actionsRef = useRef(null);
   const [menuOpen, setMenuOpen] = useState(false);
-
+  const user = useSession()?.data?.user;
   useEffect(() => {
     if (!navbarRef.current || !logoRef.current || !linksRef.current || !actionsRef.current) return;
 
@@ -70,10 +69,10 @@ export default function Navbar() {
       <div ref={logoRef}  className="flex items-center px-2 md:px-3">
         <Link href="/" className="flex items-center">
         <div className="bg-white w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300">
-          <Image src="/dall.png" alt="Triphla Logo" width={40} height={40} />
+          <img src={user?.image || "/dall.png"} alt={user?.name || "Triphla Logo"} width={40} height={40} className="rounded-full"/>
         </div>
         <div className="ml-2 font-semibold text-base md:text-lg hover:text-primary transition-colors duration-300">
-          Triphla
+          {user?.name?  user.name : "Triphla"}
         </div>
         </Link>
       </div>
@@ -109,16 +108,21 @@ export default function Navbar() {
       {/* Desktop User Actions */}
       <div ref={actionsRef} className="hidden md:flex items-center space-x-2 md:space-x-4">
         <AudioPlayer />
-        <SignedOut>
-          <div className="rounded-full bg-primary/90 hover:bg-primary px-3 py-1 text-sm text-primary-foreground shadow-sm hover:shadow-md transition-all duration-200">
-            <SignInButton mode="modal">Sign In</SignInButton>
+        {/* <SignedOut> */}
+        
+        {user?
+        <div className="rounded-full bg-primary/90 hover:bg-primary px-3 py-1 text-sm text-primary-foreground shadow-sm hover:shadow-md transition-all duration-200">
+            <button mode="modal" 
+              onClick={() => signOut()}
+            >Log Out</button>
           </div>
-        </SignedOut>
-
-        <SignedIn>
-          <UserButton afterSignOutUrl="/" />
-        </SignedIn>
-
+        :
+        <LoginModal>
+          <div className="rounded-full bg-primary/90 hover:bg-primary px-3 py-1 text-sm text-primary-foreground shadow-sm hover:shadow-md transition-all duration-200">
+            <button mode="modal">Sign In</button>
+          </div>
+        </LoginModal>
+        }
         <ThemeToggleButton />
       </div>
 
@@ -188,17 +192,19 @@ export default function Navbar() {
             
             <div className="flex items-center justify-between space-x-4 px-2">
               <AudioPlayer />
-              <SignedOut>
-                <SignInButton mode="modal">
-                  <span className="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-primary rounded-full hover:bg-primary/90 transition-colors duration-200">
-                    Sign In
-                  </span>
-                </SignInButton>
-              </SignedOut>
-              <SignedIn>
-                <UserButton afterSignOutUrl="/" />
-              </SignedIn>
-              <ThemeToggleButton />
+              {user?
+                      <div className="rounded-full bg-primary/90 hover:bg-primary px-3 py-1 text-sm text-primary-foreground shadow-sm hover:shadow-md transition-all duration-200">
+                          <button mode="modal" 
+                            onClick={() => signOut()}
+                          >Log Out</button>
+                        </div>
+                      :
+                      <LoginModal>
+                        <div className="rounded-full bg-primary/90 hover:bg-primary px-3 py-1 text-sm text-primary-foreground shadow-sm hover:shadow-md transition-all duration-200">
+                          <button mode="modal">Sign In</button>
+                        </div>
+                      </LoginModal>
+              }
             </div>
           </div>
         </div>

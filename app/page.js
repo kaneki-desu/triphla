@@ -1,50 +1,17 @@
-import axios from "axios"; // Keep axios if other parts need it, or remove if unused after changes.
-import Navbar from "@/components/Navbar";
-import { SignedOut } from "@clerk/nextjs";
-import Card from "@/components/cards";
-import Typing from "@/components/typing";
-import Image from "next/image";
 import Link from "next/link";
 import OutlineButton from "@/components/outlinebutton";
 import Squares from "@/components/backgroundPaths";
 import { TimelineDemo } from "@/components/time";
 import BidirectionalSlider from "@/components/bidirectionalslider";
-import { Newspaper } from "lucide-react";
+
+import { Suspense } from "react";
+import NewsSection from "@/components/NewsWrapper";
 // Removed useState and useEffect
 
 const NEWS_API= process.VITE_NEWS_API || "https://triphla-yv9t.onrender.com/api/stock-news";
-async function fetchNews() {
-  try {
-    // Using fetch API for server-side fetching and revalidation (ISR)
-    const response = await fetch(NEWS_API, {
-      method: 'POST', // Assuming POST is required as per original code
-      headers: {
-        'Content-Type': 'application/json', // Add headers if needed by the API
-      },
-      // Add body if the POST request needs data: body: JSON.stringify({ key: 'value' })
-      next: { revalidate: 3600 } // Revalidate every hour (3600 seconds)
-    });
 
-    if (!response.ok) {
-      // Log detailed error for server-side debugging
-      console.error(`Error fetching stock news: ${response.status} ${response.statusText}`);
-      const errorBody = await response.text();
-      console.error("Error body:", errorBody);
-      return null; // Return null or throw an error
-    }
-    const newsData = await response.json();
-    console.log(newsData);
-    return newsData;
-  } catch (error) {
-    console.error("Error fetching stock news:", error);
-    return null; // Return null or handle error appropriately
-  }
-}
 
 export default async function Home() {
-  const news = await fetchNews();
-  const newsArr = JSON.parse(news);
-  
   return (
     <div className="w-full ">
       <div data-theme="coffee" className="relative overflow-hidden min-h-[90vh] rounded-xl bg-gradient-to-b from-gray-900 to-black ">
@@ -90,23 +57,11 @@ export default async function Home() {
                 <div className="flex flex-col items-center justify-center ">
                   {/* Main CTA Button */}
                   <Link 
-                    href="/interface" 
+                    href="/learn" 
                     className="relative group md:scale-125"
                   >
                     <OutlineButton/>
                   </Link>
-
-                  {/* Social Proof */}
-                  {/* <div className="flex items-center justify-center space-x-3 text-gray-400 bg-gray-800/30 backdrop-blur-sm px-6 py-3 rounded-full border border-gray-700/50">
-                    <div className="flex -space-x-2">
-                      <div className="w-8 h-8 rounded-full bg-primary/20 border border-gray-700"></div>
-                      <div className="w-8 h-8 rounded-full bg-primary/30 border border-gray-700"></div>
-                      <div className="w-8 h-8 rounded-full bg-primary/40 border border-gray-700"></div>
-                    </div>
-                    <p className="text-sm">
-                      Join <span className="text-white font-semibold">10,000+</span> investors
-                    </p>
-                  </div> */}
                 </div>
               </div>
 
@@ -164,9 +119,9 @@ export default async function Home() {
       </div>
 
       {/* Rest of your components */}
-      <div className="w-full py-8">
-        <BidirectionalSlider news={newsArr} />
-      </div>
+      <Suspense fallback={<div className="w-full p-8 m-auto flex items-center justify-center">Loading...</div>}>
+        <NewsSection/>
+      </Suspense>
       <div className="py-8">
         <TimelineDemo />
       </div>

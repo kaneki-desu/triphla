@@ -7,13 +7,12 @@ import { Table, TableHeader, TableRow, TableCell, TableBody } from "@/components
 import { Button } from "@/components/ui/button";
 import { AlertTriangle, TrendingUp, TrendingDown, Filter, ArrowUpDown, User, Briefcase, Calendar, Upload } from "lucide-react"; // Added Upload icon
 import { useState, useEffect, useRef } from "react"; // Added useEffect, useRef
-import { useUser, UserButton } from "@clerk/nextjs";
+
 import { motion } from "framer-motion";
-import { ThemeToggleButton } from "@/components/ui/theme-toggle-button";
-import Navbar from "@/components/Navbar";
+import { useSession } from "next-auth/react";
 
 export default function PortfolioDashboard() {
-  const { user } = useUser();
+  const user= useSession()?.data?.user;
   const [displayedAvatarUrl, setDisplayedAvatarUrl] = useState(user?.imageUrl || ''); // State for avatar URL
   const [sortField, setSortField] = useState("ticker");
   const [sortDirection, setSortDirection] = useState("asc");
@@ -21,13 +20,47 @@ export default function PortfolioDashboard() {
   const [isUploading, setIsUploading] = useState(false); // State for upload status
   const fileInputRef = useRef(null); // Ref for file input
 
-  // Update displayed avatar if Clerk user data changes
+  // Add test portfolio data
+  const testPortfolio = [
+    {"symbol": "RELIANCE.NS", "quantity": 10, "avg_price": 2500.50},
+    {"symbol": "TCS.NS", "quantity": 5, "avg_price": 3500.25},
+    {"symbol": "HDFCBANK.NS", "quantity": 3, "avg_price": 1500.75},
+    {"symbol": "INFY.NS", "quantity": 2, "avg_price": 1600.50},
+    {"symbol": "ICICIBANK.NS", "quantity": 1, "avg_price": 900.00},
+    {"symbol": "HINDUNILVR.NS", "quantity": 4, "avg_price": 2500.00},
+    {"symbol": "BHARTIARTL.NS", "quantity": 3, "avg_price": 1000.00},
+    {"symbol": "SBIN.NS", "quantity": 5, "avg_price": 600.00},
+    {"symbol": "KOTAKBANK.NS", "quantity": 2, "avg_price": 1800.00},
+    {"symbol": "ITC.NS", "quantity": 4, "avg_price": 400.00}
+  ];
+
+  // Add useEffect to fetch portfolio data
   useEffect(() => {
-    // TODO: In a real app with a database, you'd fetch the *custom* avatar URL here
-    // associated with the userId and set that as the initial state.
-    // For now, we default to Clerk's image or an empty string.
-    setDisplayedAvatarUrl(user?.imageUrl || '');
-  }, [user?.imageUrl]);
+    const fetchPortfolioData = async () => {
+      try { 
+        console.log('Fetching portfolio data...');
+        const response = await fetch('http://localhost:8000/analyze-portfolio', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ holdings: testPortfolio })
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log('Portfolio Analysis Result:', data);
+        // Here you can set the data to state if needed
+      } catch (error) {
+        console.error('Error fetching portfolio data:', error);
+      }
+    };
+
+    fetchPortfolioData();
+  }, []); // Empty dependency array means this runs once when component mounts
 
 
   // Updated mock data for Indian market
@@ -153,7 +186,7 @@ export default function PortfolioDashboard() {
 
           <div>
             <h1 className="text-xl md:text-2xl font-semibold">
-              Welcome, {user ? user.firstName || user.fullName : 'User'}!
+              Welcome, { user?.name ? user.name : 'User'}!
             </h1>
             <p className="text-sm text-gray-500 dark:text-gray-400">
               Track your Indian market investments here
