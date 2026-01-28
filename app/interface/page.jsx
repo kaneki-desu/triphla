@@ -7,7 +7,7 @@ import { Switch } from "@/components/ui/switch";
 import { MessageSquare, Calculator, Bot, BarChartHorizontalBig } from 'lucide-react'; // Added icons
 import FinancialPlanner from '@/components/FinancialPlanner';
 
-const API_URL = process.env.VITE_AI_API || "https://triphla-2862.onrender.com/api";
+const API_URL = process.env.NEXT_PUBLIC_AI_BACKEND_API+'api' || "http://localhost:8000/api";
 
 // Chatbot Component (Extracted for clarity)
 const Chatbot = ({ messages, input, setInput, handleSubmit, isLoading, messagesEndRef }) => (
@@ -29,7 +29,7 @@ const Chatbot = ({ messages, input, setInput, handleSubmit, isLoading, messagesE
                         <div
                             className={`inline-block p-3 md:p-4 rounded-xl max-w-[80%] shadow-md
                                 ${message.role === 'user'
-                                    ? 'bg-primary text-primary-content' // User message style
+                                    ? 'bg-primary  text-black' // User message style
                                     : 'bg-base-100 text-base-content' // Assistant message style
                             }`}
                         >
