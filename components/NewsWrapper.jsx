@@ -3,8 +3,7 @@ import { getNews } from "@/lib/NewsData";
 import BidirectionalSlider from "@/components/bidirectionalslider";
 
 export default async function NewsSection() {
-  // const news = await getNews();
-  const news = '[]';
+  const news = await getNews() || "";
 
-  return <BidirectionalSlider news={JSON.parse(news) ?? []} />;
+  return <BidirectionalSlider news={JSON.parse(news)} />;
 }

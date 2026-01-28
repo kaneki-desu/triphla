@@ -4,6 +4,7 @@ import Link from 'next/link'; // Import Link for navigation
 
 const BidirectionalSlider = ({ news = [] }) => {
   // 🛑 EARLY EXIT — before using news.length
+  console.log(news , !Array.isArray(news), typeof news)
   if (!Array.isArray(news) || news.length === 0) {
     return (
       <div className="h-72 flex items-center justify-center text-gray-400">
@@ -40,6 +41,68 @@ const BidirectionalSlider = ({ news = [] }) => {
     const id = setInterval(animateSliders, 20);
     return () => clearInterval(id);
   }, [totalWidth1, totalWidth2]);
+  if (!news || news.length === 0) {
+    return <div className="text-center p-4">No news available.</div>;
+  }
+  return (
+    <div className="relative w-full overflow-hidden h-72">
+      {/* Top slider (left to right) */}
+      <div
+        className="absolute flex"
+        style={{ transform: `translateX(-${leftPosition1}px)`, whiteSpace: "nowrap" }}
+      >
+        {/* Use news1 for the top slider */}
+        {[...news1, ...news1].map((newsItem, index) => {
+          // Define radial gradient fading towards center (using white initially)
+        const gradientStyle =
+          newsItem.sentiment === "Bullish"
+            ? "bg-[radial-gradient(ellipse_at_center,_rgba(255,255,255,0)_0%,_rgba(34,197,94,0.3)_95%)]" // Green
+            : newsItem.sentiment === "Bearish"
+            ? "bg-[radial-gradient(ellipse_at_center,_rgba(255,255,255,0)_0%,_rgba(239,68,68,0.3)_95%)]" // Red
+            : "bg-[radial-gradient(ellipse_at_center,_rgba(255,255,255,0.1)_0%,_rgba(0,0,0,0.8)_95%)]"; // Neutral
+
+          return (
+            <div key={`slider1-${index}`} className={`min-w-[${ITEM_WIDTH}px] h-36 p-2`}>
+              {/* Apply radial gradient style class */}
+                <Link href={newsItem.link} target="_blank" rel="noopener noreferrer" className="  hover:underline"> {/* Keep text black for now */}
+              <div className={`w-full h-full rounded-lg ${gradientStyle} p-4 flex items-center justify-center text-center overflow-hidden`}>
+                  {newsItem.headline}
+              </div>
+                </Link>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Bottom slider (right to left) */}
+      <div
+        className="absolute flex top-36" // Adjust top position if needed
+        style={{ transform: `translateX(${rightPosition2}px)`, whiteSpace: "nowrap" }}
+      >
+        {/* Use news2 for the bottom slider */}
+        {[...news2, ...news2].map((newsItem, index) => {
+           // Define radial gradient fading towards center (using white initially)
+        const gradientStyle =
+          newsItem.sentiment === "Bullish"
+            ? "bg-[radial-gradient(ellipse_at_center,_rgba(255,255,255,0)_0%,_rgba(34,197,94,0.3)_95%)]" // Green
+            : newsItem.sentiment === "Bearish"
+            ? "bg-[radial-gradient(ellipse_at_center,_rgba(255,255,255,0)_0%,_rgba(239,68,68,0.3)_95%)]" // Red
+            : "bg-[radial-gradient(ellipse_at_center,_rgba(255,255,255,0.1)_0%,_rgba(0,0,0,0.8)_95%)]"; // Neutral
+        // White to Red (semi-transparent)
+           return (
+             <div key={`slider2-${index}`} className={`min-w-[${ITEM_WIDTH}px] h-36 p-2`}>
+               {/* Apply radial gradient style class */}
+                 <Link href={newsItem.link} target="_blank" rel="noopener noreferrer" className="  hover:underline"> {/* Keep text black for now */}
+               <div className={`w-full h-full rounded-lg ${gradientStyle} p-4 flex items-center justify-center text-center overflow-hidden`}>
+                   {newsItem.headline}
+               </div>
+                 </Link>
+             </div>
+           );
+        })}
+      </div>
+    </div>
+  );
 }
 
 export default BidirectionalSlider;

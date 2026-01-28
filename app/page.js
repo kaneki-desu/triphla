@@ -8,8 +8,6 @@ import { Suspense } from "react";
 import NewsSection from "@/components/NewsWrapper";
 // Removed useState and useEffect
 
-const NEWS_API= process.VITE_NEWS_API || "https://triphla-yv9t.onrender.com/api/stock-news";
-
 
 export default async function Home() {
   return (

@@ -2,9 +2,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const QUIZ_API = process.env.NEXT_PUBLIC_QUIZ_API || "https://triphla-quiz.onrender.com/quiz";
-
-console.log(QUIZ_API)
 export default function QuizComponent() {
     const [questions, setQuestions] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -19,20 +16,22 @@ export default function QuizComponent() {
         try {
             setLoading(true);
             setError(null);
+            const QUIZ_API = process.env.NEXT_PUBLIC_AI_BACKEND_API+"api/quiz";
             const response = await axios.post(QUIZ_API, {
                 num_questions: 5,
                 topic: "finance"
             });
-            
-            // Validate and clean the data
             const cleanedQuestions = response.data[0].map(q => ({
-                ...q,
-                question: q.question.trim(),
-                correct_option: q.correct_option.trim(),
-                options: q.options.map(opt => opt.trim()),
-                answer_explanation: q.answer_explanation.trim()
+                question: q.question?.trim() || "",
+                options: [
+                    q.A?.trim() || "",
+                    q.B?.trim() || "",
+                    q.C?.trim() || "",
+                    q.D?.trim() || ""
+                ],
+                correct_option: q.correct?.trim() || "", // "A", "B", "C", or "D"
+                answer_explanation: q[q.correct]?.trim() || "" // The text of the correct option
             }));
-            
             setQuestions(cleanedQuestions);
             setCurrentQuestion(0);
             setScore(0);
