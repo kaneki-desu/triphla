@@ -19,7 +19,6 @@ import {
 } from 'lucide-react';
 
 const API_URL = process.env.NEXT_PUBLIC_AI_BACKEND_API||"http://localhost:8000/api";
-console.log('API_URL:', API_URL);
 const FinancialPlanner = () => {
     const [formData, setFormData] = useState({
         name: '',
