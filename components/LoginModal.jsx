@@ -1,20 +1,20 @@
 "use client";
 
-import { useState,  useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { createPortal } from "react-dom";
 import GoogleSignInButton from "./GoogleSignInBtn";
 import { useSearchParams } from "next/navigation";
 import CredentialsForm from "./CredentialsForm";
 
-export default function LoginModal({ children }) {
+function LoginModalContent({ children }) {
   const [open, setOpen] = useState(false);
-  const searchParams= useSearchParams();
-  useEffect(()=>{
-    if(searchParams.has("callbackUrl")){
+  const searchParams = useSearchParams();
+  useEffect(() => {
+    if (searchParams.has("callbackUrl")) {
       setOpen(true);
     }
-    },[searchParams])
-    if (typeof window === "undefined") return null;
+  }, [searchParams]);
+  if (typeof window === "undefined") return null;
   return (
     <>
       {/* Trigger */}
@@ -56,5 +56,13 @@ export default function LoginModal({ children }) {
           document.getElementById("modal-root")
         )}
     </>
+  );
+}
+
+export default function LoginModal({ children }) {
+  return (
+    <Suspense fallback={<span className="cursor-pointer">{children}</span>}>
+      <LoginModalContent>{children}</LoginModalContent>
+    </Suspense>
   );
 }
