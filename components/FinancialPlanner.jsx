@@ -18,8 +18,7 @@ import {
     User
 } from 'lucide-react';
 
-// const API_URL = process.env.VITE_AI_API||"http://localhost:8000/api";
-const API_URL = process.env.VITE_AI_API||"https://triphla-2862.onrender.com/api";
+const API_URL = process.env.NEXT_PUBLIC_AI_BACKEND_API||"http://localhost:8000/api";
 console.log('API_URL:', API_URL);
 const FinancialPlanner = () => {
     const [formData, setFormData] = useState({
@@ -42,8 +41,7 @@ const FinancialPlanner = () => {
         try {
             setLoading(true);
             console.log('Generating financial report...');
-            
-            const response = await fetch(`${API_URL}/generate-report`, {
+            const response = await fetch(`${API_URL}api/generate-report`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -72,9 +70,7 @@ const FinancialPlanner = () => {
             if (data.download_url) {
                 setDownloadUrl(data.download_url);
                 // Wait a short moment to ensure the file is ready
-                setTimeout(() => {
-                    handleDownloadReport();
-                }, 1000);
+                handleDownloadReport(data.download_url);
             }
         } catch (error) {
             console.error('Error:', error);
@@ -84,14 +80,15 @@ const FinancialPlanner = () => {
         }
     };
 
-    const handleDownloadReport = async () => {
+    const handleDownloadReport = async (downloadUrlFromApi) => {
         try {
-            if (!PDFdownloadUrl) {
+            const url = downloadUrlFromApi || PDFdownloadUrl;
+
+            if (!url) {
                 throw new Error('No download URL available');
             }
-            console.log('PDFdownloadUrl:', PDFdownloadUrl);
-            // Extract filename from the URL
-            const filename = PDFdownloadUrl.split('/').pop();
+            console.log('Downloading from:', url);
+            const filename = url.split('/').pop();
             
             
             // Make the download request
@@ -116,7 +113,7 @@ const FinancialPlanner = () => {
             // link.href = downloadUrl;
             // link.download = `financial_report_${formData.name.replace(/\s+/g, '_')}.pdf`;
             
-            const downloadUrl = `${API_URL}/download-financial-planner/${filename}`;
+            const downloadUrl = `${API_URL}api/download-financial-planner/${filename}`;
             const link = document.createElement('a');
             link.href = downloadUrl;
             link.download = `financial_report_${formData.name.replace(/\s+/g, '_')}.pdf`;
